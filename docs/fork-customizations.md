@@ -96,11 +96,13 @@ pnpm prepack
 pnpm --filter @logto/core test --runInBand demo-apps logto-config sign-in-experience koa-auth
 pnpm --filter @logto/console test --runInBand use-branding-entitlements parser DemoApps
 pnpm --filter @logto/integration-tests build
-pnpm --filter @logto/integration-tests exec puppeteer browsers install chrome --install-deps
+pnpm --filter @logto/integration-tests exec puppeteer browsers install chrome
 docker build -t logto:acceptance .
 .scripts/fork/validate-container.sh logto:acceptance
 # 本地也支持 CONTAINER_ENGINE=podman
 ```
+
+浏览器所需系统库需预先安装；GitHub Ubuntu runner 使用 `sudo` 调用 Puppeteer 的 `--install-deps` 安装它们，并把浏览器缓存留在 runner 用户目录。
 
 容器脚本创建独立临时网络和 PostgreSQL 18，正常 seed，然后用受限测试 M2M 凭据走真实认证；
 不启用 `INTEGRATION_TEST` 或开发用户跳过认证。它覆盖默认值、动态关闭/恢复、缓存、页面子路径、
