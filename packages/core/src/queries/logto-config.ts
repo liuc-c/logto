@@ -5,6 +5,9 @@ import {
   LogtoTenantConfigKey,
   type AdminConsoleData,
   type CimdConfig,
+  type DemoAppsConfig,
+  demoAppsConfigGuard,
+  defaultDemoAppsConfig,
   cimdConfigGuard,
   defaultCimdConfig,
   type IdTokenConfig,
@@ -261,6 +264,21 @@ export const createLogtoConfigQueries = (
     ['id-token-config']
   );
 
+  // Deliberately uncached: every replica and already-created OIDC provider must observe a
+  // committed toggle on its next request, without waiting for tenant or Redis cache expiry.
+  const getDemoAppsConfig = async (): Promise<DemoAppsConfig> => {
+    const { rows } = await getRowsByKeys([LogtoTenantConfigKey.DemoApps]);
+    return rows.length === 0 ? defaultDemoAppsConfig : demoAppsConfigGuard.parse(rows[0]?.value);
+  };
+
+  const upsertDemoAppsConfig = async (value: DemoAppsConfig) =>
+    pool.query(sql`
+      insert into ${table} (${fields.key}, ${fields.value})
+        values (${LogtoTenantConfigKey.DemoApps}, ${sql.jsonb(value)})
+        on conflict (${fields.tenantId}, ${fields.key}) do update set ${fields.value} = ${sql.jsonb(value)}
+        returning *
+    `);
+
   const getCimdConfig = async (): Promise<CimdConfig> => {
     const { rows } = await getRowsByKeys([LogtoTenantConfigKey.Cimd]);
 
@@ -314,6 +332,8 @@ export const createLogtoConfigQueries = (
     deleteAction,
     getIdTokenConfig,
     upsertIdTokenConfig,
+    getDemoAppsConfig,
+    upsertDemoAppsConfig,
     getCimdConfig,
     upsertCimdConfig,
     getMessageRateLimitOverride,

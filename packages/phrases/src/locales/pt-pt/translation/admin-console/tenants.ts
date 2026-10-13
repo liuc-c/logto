@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'Aplicações de demonstração',
+    description:
+      'Aplica-se às duas demonstrações integradas do tenant atual. As alterações são imediatas e não afetam o início de sessão administrativo nem outras aplicações.',
+    enabled: 'Ativar aplicações de demonstração',
+    disabled: 'As demonstrações estão desativadas nas definições.',
+  },
   title: 'Definições',
   description: 'Gerir eficientemente as configurações do inquilino e personalizar o seu domínio.',
   oss_description:

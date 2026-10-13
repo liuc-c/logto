@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'Demo uygulamaları',
+    description:
+      'Geçerli kiracının iki yerleşik demosuna uygulanır. Değişiklikler hemen geçerli olur; yönetici girişi ve diğer uygulamalar etkilenmez.',
+    enabled: 'Demo uygulamalarını etkinleştir',
+    disabled: 'Demo uygulamaları ayarlarda devre dışı bırakılmış.',
+  },
   title: 'Ayarlar',
   description: 'Kiracı ayarlarını verimli bir şekilde yönetin ve alan adınızı özelleştirin.',
   oss_description:

@@ -614,6 +614,39 @@
           }
         }
       }
+    },
+    "/api/configs/demo-apps": {
+      "get": {
+        "summary": "Get demo applications configuration",
+        "description": "Read the current business tenant configuration. Both built-in demos are enabled when no configuration is stored.",
+        "responses": {
+          "200": {
+            "description": "The demo applications configuration."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update demo applications configuration",
+        "description": "Enable or disable both built-in demo pages and clients for the current business tenant. Takes effect on subsequent requests without restarting. Previously issued tokens are not revoked.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "enabled": {
+                    "description": "Whether both built-in demo applications are enabled."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The persisted demo applications configuration."
+          }
+        }
+      }
     }
   }
 }

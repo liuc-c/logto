@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'デモアプリ',
+    description:
+      '現在の業務テナントの組み込みデモ 2 つに適用されます。保存後すぐに反映され、管理者ログインや他のアプリには影響しません。',
+    enabled: 'デモアプリを有効にする',
+    disabled: 'デモアプリは設定で無効になっています。',
+  },
   title: '設定',
   description: 'テナントの設定を効率的に管理し、ドメインをカスタマイズします。',
   oss_description:

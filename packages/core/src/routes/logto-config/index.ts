@@ -22,6 +22,7 @@ import type { ManagementApiRouter, RouterInitArgs } from '../types.js';
 
 import logtoConfigActionRoutes from './action.js';
 import logtoConfigCimdRoutes from './cimd.js';
+import demoAppsRoutes from './demo-apps.js';
 import idTokenRoutes from './id-token.js';
 import logtoConfigJwtCustomizerRoutes from './jwt-customizer.js';
 
@@ -233,4 +234,5 @@ export default function logtoConfigRoutes<T extends ManagementApiRouter>(
   idTokenRoutes(router, tenant);
   logtoConfigActionRoutes(router, tenant);
   logtoConfigCimdRoutes(router, tenant);
+  demoAppsRoutes(router, tenant);
 }

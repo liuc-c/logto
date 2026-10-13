@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'Demo-Anwendungen',
+    description:
+      'Gilt für beide integrierten Demos des aktuellen Mandanten. Änderungen gelten sofort; die Admin-Anmeldung und andere Anwendungen bleiben unberührt.',
+    enabled: 'Demo-Anwendungen aktivieren',
+    disabled: 'Demo-Anwendungen sind in den Einstellungen deaktiviert.',
+  },
   title: 'Einstellungen',
   description: 'Effizientes Verwalten von Mandanteneinstellungen und Anpassen Ihrer Domain.',
   oss_description:

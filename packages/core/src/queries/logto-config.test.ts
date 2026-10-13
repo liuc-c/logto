@@ -403,3 +403,18 @@ describe('logto config transactional queries', () => {
     expect(methods.one).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('demo app config reads', () => {
+  const { getDemoAppsConfig } = createLogtoConfigQueries(pool, new MockWellKnownCache());
+
+  it('defaults to enabled without a row, then observes each committed change without a cache', async () => {
+    mockQuery.mockResolvedValueOnce(createMockQueryResult([]));
+    await expect(getDemoAppsConfig()).resolves.toEqual({ enabled: true });
+    mockQuery.mockResolvedValueOnce(
+      createMockQueryResult([{ value: { enabled: false } }] as never)
+    );
+    await expect(getDemoAppsConfig()).resolves.toEqual({ enabled: false });
+    mockQuery.mockResolvedValueOnce(createMockQueryResult([{ value: { enabled: true } }] as never));
+    await expect(getDemoAppsConfig()).resolves.toEqual({ enabled: true });
+  });
+});

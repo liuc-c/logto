@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'Aplikacje demonstracyjne',
+    description:
+      'Dotyczy obu wbudowanych demonstracji bieżącego tenanta. Zmiany działają natychmiast i nie wpływają na logowanie administratora ani inne aplikacje.',
+    enabled: 'Włącz aplikacje demonstracyjne',
+    disabled: 'Aplikacje demonstracyjne są wyłączone w ustawieniach.',
+  },
   title: 'Ustawienia',
   description: 'Skuteczne zarządzanie ustawieniami najemcy i dostosowywanie domeny.',
   oss_description:

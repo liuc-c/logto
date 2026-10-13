@@ -64,6 +64,7 @@ import { buildClientIdMetadataDocumentFeature, shouldTreatAsCimdClient } from '.
 import { filterResourceScopesForTheCimdClient } from './cimd/resource-scopes.js';
 import { getOidcScopesNoLongerAllowed } from './client-scope.js';
 import defaults from './defaults.js';
+import { installDemoAppsGate } from './demo-apps.js';
 import { deviceFlowConfig, defaultDeviceCodeTtl } from './device-flow.js';
 import {
   getExtraTokenClaimsForJwtCustomization,
@@ -580,6 +581,7 @@ export default function initOidc(
     },
   });
 
+  installDemoAppsGate(oidc, queries);
   installWildcardRedirectUriMatching(oidc);
   addOidcEventListeners(tenantId, oidc, queries, libraries.hooks.triggerEvent);
   registerGrants(oidc, envSet, queries, libraries);

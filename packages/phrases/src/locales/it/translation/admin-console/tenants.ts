@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'Applicazioni demo',
+    description:
+      'Si applica alle due demo integrate del tenant corrente. Le modifiche sono immediate e non influiscono sull’accesso amministratore o sulle altre applicazioni.',
+    enabled: 'Abilita applicazioni demo',
+    disabled: 'Le demo sono disabilitate nelle impostazioni.',
+  },
   title: 'Impostazioni',
   description:
     "Gestisci efficacemente le impostazioni dell'inquilino e personalizza il tuo dominio.",

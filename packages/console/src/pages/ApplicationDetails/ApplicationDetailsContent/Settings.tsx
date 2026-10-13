@@ -22,6 +22,7 @@ import {
 } from '@/ds-components/MultiTextInput/utils';
 import TextInput from '@/ds-components/TextInput';
 import TextLink from '@/ds-components/TextLink';
+import useDemoApps from '@/hooks/use-demo-apps';
 import useDocumentationUrl from '@/hooks/use-documentation-url';
 import { isJsonObject } from '@/utils/json';
 
@@ -102,6 +103,7 @@ function Settings({ data }: Props) {
       message: t('errors.invalid_uri_format'),
     },
   };
+  const { enabled: demosEnabled } = useDemoApps();
   const redirectUris = watch('oidcClientMetadata.redirectUris');
   const postLogoutRedirectUris = watch('oidcClientMetadata.postLogoutRedirectUris');
   const showRedirectUriMixedWarning = hasMixedUriProtocols(applicationType, redirectUris);
@@ -135,6 +137,7 @@ function Settings({ data }: Props) {
             </Trans>
           </span>
           <Button
+            disabled={!demosEnabled}
             className={styles.deviceFlowTryDemoButton}
             size="small"
             title="application_details.device_flow_try_demo"
@@ -147,6 +150,7 @@ function Settings({ data }: Props) {
               window.open(new URL('/device-demo-app', tenantEndpoint), '_blank');
             }}
           />
+          {!demosEnabled && <span>{t('tenants.demo_apps.disabled')}</span>}
         </div>
       )}
       <FormField isRequired title="application_details.application_name">

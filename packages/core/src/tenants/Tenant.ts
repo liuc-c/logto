@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- keep tenant middleware registration and lifecycle ordering together */
 import { adminTenantId, experience } from '@logto/schemas';
 import { ConsoleLog } from '@logto/shared';
 import { once } from '@silverhand/essentials';
@@ -18,6 +19,7 @@ import koaAccountCenterSsr from '#src/middleware/koa-account-center-ssr.js';
 import koaAutoConsent from '#src/middleware/koa-auto-consent.js';
 import koaConnectorErrorHandler from '#src/middleware/koa-connector-error-handler.js';
 import koaConsoleRedirectProxy from '#src/middleware/koa-console-redirect-proxy.js';
+import koaDemoApps from '#src/middleware/koa-demo-apps.js';
 import koaDeviceFlowShortcut from '#src/middleware/koa-device-flow-shortcut.js';
 import koaErrorHandler from '#src/middleware/koa-error-handler.js';
 import koaExperienceSsr from '#src/middleware/koa-experience-ssr.js';
@@ -159,6 +161,7 @@ export default class Tenant implements TenantContext {
     app.use(koaConnectorErrorHandler());
     app.use(koaCompress());
     app.use(koaSecurityHeaders(mountedApps, id));
+    app.use(koaDemoApps(queries));
 
     // Mount OIDC
     const provider = initOidc(id, envSet, queries, libraries, logtoConfigs, subscription);
@@ -414,3 +417,5 @@ export default class Tenant implements TenantContext {
     return isTenantHealthy(this.#createdAt, signingKeyRotationState);
   }
 }
+
+/* eslint-enable max-lines */

@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'Applications de démonstration',
+    description:
+      'Concerne les deux démonstrations intégrées du tenant métier actuel. Les changements sont immédiats, sans effet sur la connexion admin ni les autres applications.',
+    enabled: 'Activer les applications de démonstration',
+    disabled: 'Les démonstrations sont désactivées dans les paramètres.',
+  },
   title: 'Paramètres',
   description: 'Gérez efficacement les paramètres du locataire et personnalisez votre domaine.',
   oss_description:

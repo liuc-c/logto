@@ -12,6 +12,7 @@ import NotFound from '@/pages/NotFound';
 
 const TenantSettings = safeLazy(async () => import('@/pages/TenantSettings'));
 const OssTenantSettings = safeLazy(async () => import('@/pages/OssTenantSettings'));
+const DemoApps = safeLazy(async () => import('@/pages/OssTenantSettings/DemoApps'));
 const OssTenantLicense = safeLazy(async () => import('@/pages/OssTenantSettings/License'));
 const OssTenantBasicSettings = safeLazy(async () => import('@/pages/OssTenantSettings/Settings'));
 const TenantBasicSettings = safeLazy(
@@ -115,6 +116,10 @@ const useOssTenantSettings = (): RouteObject => {
             { index: true, element: <Members /> },
             ...condArray(canRemoveMember && [{ path: 'invitations', element: <Invitations /> }]),
           ],
+        },
+        {
+          path: TenantSettingsTabs.DemoApps,
+          element: <DemoApps />,
         },
         {
           path: TenantSettingsTabs.License,

@@ -26,6 +26,7 @@ import Spacer from '@/ds-components/Spacer';
 import Tag from '@/ds-components/Tag';
 import TextLink from '@/ds-components/TextLink';
 import { isDevOnlyRegion } from '@/hooks/use-available-regions';
+import useDemoApps from '@/hooks/use-demo-apps';
 import useDocumentationUrl from '@/hooks/use-documentation-url';
 import useTenantPathname from '@/hooks/use-tenant-pathname';
 import useTheme from '@/hooks/use-theme';
@@ -45,6 +46,7 @@ const icons = {
 };
 
 function GetStarted() {
+  const { enabled: demosEnabled } = useDemoApps();
   const { t } = useTranslation(undefined, { keyPrefix: 'admin_console' });
   const { navigate } = useTenantPathname();
   const { getDocumentationUrl } = useDocumentationUrl();
@@ -221,11 +223,15 @@ function GetStarted() {
               title="get_started.customize.continue_customizing"
               href="/sign-in-experience"
             />
-            <LinkButton
-              title="get_started.customize.try_now"
-              href={new URL('/demo-app', tenantEndpoint).href}
-              targetBlank="noopener"
-            />
+            {demosEnabled ? (
+              <LinkButton
+                title="get_started.customize.try_now"
+                href={new URL('/demo-app', tenantEndpoint).href}
+                targetBlank="noopener"
+              />
+            ) : (
+              <span>{t('tenants.demo_apps.disabled')}</span>
+            )}
           </div>
         </div>
         <div className={styles.borderBox}>

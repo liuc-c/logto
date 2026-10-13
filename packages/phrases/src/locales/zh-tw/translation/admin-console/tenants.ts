@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: '示範應用程式',
+    description:
+      '控制目前業務租戶的兩個內建示範應用程式。儲存後立即生效，不影響管理後台登入和其他應用程式。',
+    enabled: '啟用示範應用程式',
+    disabled: '示範應用程式已在設定中關閉。',
+  },
   title: '設置',
   description: '高效管理租戶設定並自訂您的網域。',
   oss_description: '請在此變更帳戶設定並管理您的個人資料，以確保帳戶安全。',

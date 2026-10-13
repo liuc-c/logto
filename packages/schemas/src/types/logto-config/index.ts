@@ -195,7 +195,13 @@ export type CimdConfig = z.infer<typeof cimdConfigGuard>;
 /** Applied when the `cimd` row is absent: the feature is opt-in per tenant. */
 export const defaultCimdConfig = Object.freeze({ enabled: false } satisfies CimdConfig);
 
+/** Built-in demonstration applications, enabled by default for upstream compatibility. */
+export const demoAppsConfigGuard = z.object({ enabled: z.boolean() });
+export type DemoAppsConfig = z.infer<typeof demoAppsConfigGuard>;
+export const defaultDemoAppsConfig = Object.freeze({ enabled: true } satisfies DemoAppsConfig);
+
 export enum LogtoTenantConfigKey {
+  DemoApps = 'demoApps',
   AdminConsole = 'adminConsole',
   CloudConnection = 'cloudConnection',
   /** The URL to redirect when session not found in Sign-in Experience. */
@@ -217,6 +223,7 @@ export type LogtoTenantConfigType = {
   [LogtoTenantConfigKey.SigningKeyRotationState]: SigningKeyRotationState;
   [LogtoTenantConfigKey.MessageRateLimitOverride]: MessageRateLimitOverride;
   [LogtoTenantConfigKey.Cimd]: CimdConfig;
+  [LogtoTenantConfigKey.DemoApps]: DemoAppsConfig;
 };
 
 export const logtoTenantConfigGuard: Readonly<{
@@ -229,6 +236,7 @@ export const logtoTenantConfigGuard: Readonly<{
   [LogtoTenantConfigKey.SigningKeyRotationState]: signingKeyRotationStateGuard,
   [LogtoTenantConfigKey.MessageRateLimitOverride]: messageRateLimitOverrideGuard,
   [LogtoTenantConfigKey.Cimd]: cimdConfigGuard,
+  [LogtoTenantConfigKey.DemoApps]: demoAppsConfigGuard,
 });
 
 /* --- Summary --- */

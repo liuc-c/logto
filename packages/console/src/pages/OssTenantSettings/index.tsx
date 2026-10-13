@@ -24,6 +24,9 @@ function OssTenantSettings() {
             <DynamicT forKey="tenants.tabs.settings" />
           </TabNavItem>
         )}
+        <TabNavItem href={`/tenant-settings/${TenantSettingsTabs.DemoApps}`}>
+          <DynamicT forKey="tenants.demo_apps.title" />
+        </TabNavItem>
         <TabNavItem href={`/tenant-settings/${TenantSettingsTabs.OidcConfigs}`}>
           <DynamicT forKey="tenants.tabs.oidc_configs" />
         </TabNavItem>

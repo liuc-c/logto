@@ -9,6 +9,7 @@ import type { Props as ButtonProps, ButtonType } from '@/ds-components/Button';
 import Button from '@/ds-components/Button';
 import FlipOnRtl from '@/ds-components/FlipOnRtl';
 import { Tooltip } from '@/ds-components/Tip';
+import useDemoApps from '@/hooks/use-demo-apps';
 
 import styles from './index.module.scss';
 
@@ -19,22 +20,30 @@ type Props = {
 };
 
 function LivePreviewButton({ size, type, isDisabled }: Props) {
+  const { enabled } = useDemoApps();
+  const disabled = isDisabled || !enabled;
   const { tenantEndpoint } = useContext(AppDataContext);
   const { t } = useTranslation(undefined, { keyPrefix: 'admin_console' });
 
   return (
-    <Tooltip content={conditional(isDisabled && t('sign_in_exp.preview.live_preview_tip'))}>
+    <Tooltip
+      content={
+        enabled
+          ? conditional(isDisabled && t('sign_in_exp.preview.live_preview_tip'))
+          : t('tenants.demo_apps.disabled')
+      }
+    >
       <Button
         size={size}
         type={type}
-        disabled={isDisabled}
+        disabled={disabled}
         title="sign_in_exp.preview.live_preview"
         trailingIcon={
           <FlipOnRtl>
             <ExternalLinkIcon
               className={conditional(
                 type !== 'violet' &&
-                  classNames(styles.defaultIcon, isDisabled && styles.disabledDefaultIcon)
+                  classNames(styles.defaultIcon, disabled && styles.disabledDefaultIcon)
               )}
             />
           </FlipOnRtl>

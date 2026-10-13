@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: 'Demo applications',
+    description:
+      'Applies to both built-in demos in the current business tenant. Changes take effect immediately; admin sign-in and other applications are unaffected.',
+    enabled: 'Enable demo applications',
+    disabled: 'Demo applications are disabled in Settings.',
+  },
   title: 'Settings',
   description: 'Efficiently manage tenant settings and customize your domain.',
   oss_description:

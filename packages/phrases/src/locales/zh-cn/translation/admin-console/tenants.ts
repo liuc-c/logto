@@ -1,4 +1,11 @@
 const tenants = {
+  demo_apps: {
+    title: '演示应用',
+    description:
+      '控制当前业务租户的两个内置演示应用。保存后立即生效，不影响管理后台登录和其他应用。',
+    enabled: '启用演示应用',
+    disabled: '演示应用已在设置中关闭。',
+  },
   title: '设置',
   description: '高效管理租户设置并自定义您的域名。',
   oss_description: '在此更改账户设置并管理您的个人信息，以确保账户安全。',
