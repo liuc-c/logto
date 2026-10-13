@@ -8,6 +8,7 @@ on:
         required: true
 jobs:
   rerun:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
     steps:
       - name: rerun ${{ inputs.run_id }}

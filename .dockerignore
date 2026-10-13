@@ -22,6 +22,10 @@ cache
 .*cache
 .DS_Store
 *.env
+.env*
+**/.env*
+.worktree
+**/.git
 .idea/
 *.pem
 .history

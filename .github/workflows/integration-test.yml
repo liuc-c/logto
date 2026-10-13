@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   package:
+    if: github.repository == 'logto-io/logto'
     strategy:
       matrix:
         # Run the integration tests with and without dev features enabled
@@ -30,6 +31,7 @@ jobs:
           pnpm-version: 10
 
   run-logto:
+    if: github.repository == 'logto-io/logto'
     strategy:
       fail-fast: false
       matrix:
@@ -68,7 +70,7 @@ jobs:
   # From this genius: https://github.com/orgs/community/discussions/67654#discussioncomment-8038649
   rerun-on-failure:
     needs: run-logto
-    if: failure() && fromJSON(github.run_attempt) < 3
+    if: github.repository == 'logto-io/logto' && (failure() && fromJSON(github.run_attempt) < 3)
     runs-on: ubuntu-22.04
     steps:
       - env:

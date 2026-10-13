@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   update-metadata:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:

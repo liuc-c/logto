@@ -31,7 +31,7 @@ jobs:
   analyze:
     name: Analyze
     # Among `edited` events only base changes need a re-scan; skip title/body edits
-    if: github.event_name != 'pull_request' || github.event.action != 'edited' || github.event.changes.base != null
+    if: github.repository == 'logto-io/logto' && (github.event_name != 'pull_request' || github.event.action != 'edited' || github.event.changes.base != null)
     runs-on: ubuntu-latest
     permissions:
       actions: read

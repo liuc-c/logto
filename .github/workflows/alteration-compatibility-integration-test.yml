@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   check-alteration-changes:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
     outputs:
       has-alteration-changes: ${{ steps.changes-detection.outputs.has-alteration-changes }}
@@ -47,7 +48,7 @@ jobs:
   package:
     needs: check-alteration-changes
     runs-on: ubuntu-latest
-    if: ${{ needs.check-alteration-changes.outputs.has-alteration-changes == 'true' }}
+    if: github.repository == 'logto-io/logto' && (needs.check-alteration-changes.outputs.has-alteration-changes == 'true')
     env:
       INTEGRATION_TEST: true
       DEV_FEATURES_ENABLED: false
@@ -59,6 +60,7 @@ jobs:
           pnpm-version: 10
 
   run-logto:
+    if: github.repository == 'logto-io/logto'
     strategy:
       fail-fast: false
       matrix:
@@ -95,7 +97,7 @@ jobs:
   # From this genius: https://github.com/orgs/community/discussions/67654#discussioncomment-8038649
   rerun-on-failure:
     needs: run-logto
-    if: failure() && fromJSON(github.run_attempt) < 3
+    if: github.repository == 'logto-io/logto' && (failure() && fromJSON(github.run_attempt) < 3)
     # An error will occur if we use a newer version of Ubuntu in the CI environment, as it has restrictions on unprivileged user namespaces and sandbox usage, which prevents Chromium (used by Puppeteer) from launching properly during integration tests. So we lock the Ubuntu version to 22.04.
     # See error record: https://github.com/logto-io/logto/actions/runs/12803809008/job/35697654974
     runs-on: ubuntu-22.04
@@ -109,7 +111,7 @@ jobs:
   alteration-compatibility-conclusion:
     needs: run-logto
     runs-on: ubuntu-latest
-    if: always() && (needs.run-logto.result == 'success' || needs.run-logto.result == 'skipped')
+    if: github.repository == 'logto-io/logto' && (always() && (needs.run-logto.result == 'success' || needs.run-logto.result == 'skipped'))
     steps:
       - name: Conclusion
         run: echo "Alteration compatibility integration test completed successfully"

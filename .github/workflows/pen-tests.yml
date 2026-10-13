@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   zap-scan:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.repository == 'logto-io/logto' && (github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
 
     steps:

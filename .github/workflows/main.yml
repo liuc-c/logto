@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   main-generated-files:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:
@@ -35,6 +36,7 @@ jobs:
           fi
 
   main-build:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +52,7 @@ jobs:
         run: pnpm ci:build
 
   main-check:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:
@@ -68,6 +71,7 @@ jobs:
         run: pnpm -r check
 
   main-lint:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:
@@ -89,6 +93,7 @@ jobs:
         run: pnpm ci:stylelint
 
   main-test:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:
@@ -125,6 +130,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   main-dockerize:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:
@@ -143,6 +149,7 @@ jobs:
             additional_connector_args=--cloud
 
   main-alteration:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:

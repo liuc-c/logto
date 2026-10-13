@@ -8,6 +8,7 @@ concurrency: ${{ github.workflow }}
 
 jobs:
   report-coverage:
+    if: github.repository == 'logto-io/logto'
     runs-on: ubuntu-latest
 
     steps:
