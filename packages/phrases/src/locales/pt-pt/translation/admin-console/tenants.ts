@@ -109,6 +109,11 @@ const tenants = {
     development: 'Desenvolvimento',
     production: 'Produção',
   },
+  view_only: {
+    tag: 'Apenas visualização',
+    notification:
+      'Tem acesso apenas de visualização a este inquilino. Peça a um administrador do inquilino se precisar de fazer alterações.',
+  },
   deletion_card: {
     title: 'ELIMINAR',
     tenant_deletion: 'Eliminar inquilino',

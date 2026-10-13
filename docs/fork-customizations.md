@@ -1,7 +1,8 @@
 # Logto OSS 定制版
 
-基线：公开 Fork `liuc-c/logto`，`@logto/core 1.44.0`，上游提交
-`9449b0224`（完整 SHA 可从 `git rev-parse 9449b0224` 查询）。这是该版本之后的上游开发提交，**不是一个未经修改的 1.44.0 release tag**。
+基线：公开 Fork `liuc-c/logto`，已合入上游正式版 `v1.45.0`（`94c088f9e`）。
+2026-10-13 按个人使用需求继续同步上游 `master` 至 `6f0922e462565880608a6e2082dbf760569651d8`，
+包含正式版之后的 10 个控制台只读成员相关提交；当前 `@logto/core` 版本仍为 `1.45.0`，**不是未经修改的正式版构建**。
 保留 MPL-2.0、版权声明、包名、认证标识与上游 Dockerfile。演示应用开关与个人品牌是本 Fork 的正式 OSS 功能，可直接用于生产，不依赖 Cloud、许可证或开发功能开关。
 
 ## 设置
@@ -42,7 +43,7 @@ Cloud 套餐规则保留。个人自托管构建另外开放自定义 UI 上传 
 
 - `latest`：默认分支最近通过验证的构建。
 - `sha-<完整 Git SHA>`：定位某次源码提交，保留用于回滚。
-- `1.44.0-fork.<前 12 位 SHA>`：包含 core 上游基线版本的定制标签。
+- `1.45.0-fork.<前 12 位 SHA>`：包含 core 上游基线版本的定制标签。
 - 部署推荐使用 `@sha256:<digest>`；tag 本身在注册表中不是写保护的，digest 才是内容地址。
 - OCI 元数据包含 Fork 源码地址、revision、version、MPL-2.0 许可证；同时生成 provenance 和 SBOM。
 
@@ -90,6 +91,11 @@ services:
 
 ## 验证和同步上游
 
+本次同步仅涉及 Console 与多语言文本，没有修改后端、数据库 schema、依赖锁文件或发布工作流。
+入门页同时保留 Demo 开关与上游只读操作控制；品牌表单保留内置 Logo/favicon，并合入深色品牌色重置按钮的只读限制。
+上游 Viewer 角色依赖 Cloud 管理 API 的权限执行，仍保留其 Cloud / 开发功能条件；自托管成员继续使用既有管理员权限，个人功能配额不变。
+验证通过：Console 全部 89 个测试套件、503 项测试，Console 类型检查和生产构建，以及更新后的多语言包构建。
+
 工具链遵循仓库：Node `^22.14.0`，pnpm 10（上游也接受 pnpm 9）。
 
 ```sh
@@ -113,7 +119,7 @@ docker build -t logto:acceptance .
 
 同步流程：
 
-1. `git fetch` 上游并选择明确的正式 release tag，在维护分支合并；不要盲目跟随上游开发分支。
+1. `git fetch upstream`，默认选择明确的正式 release tag，在维护分支合并；需要同步开发提交时，先核对变更范围并记录固定的上游 commit SHA。
 2. 分别复核 Demo 补丁、品牌补丁、发布补丁；重点检查 OIDC provider 的 `Client.find` 调用链、租户权限与缓存、登录品牌读取链和 Dockerfile 变化。
 3. 按上游要求处理数据库 alteration，在数据库副本上运行上述验证及相关 lint/类型检查；检查新增上游 workflows 是否需隔离。
 4. 更新本文件基线信息，合入 Fork 默认分支。Actions 验证后构建发布，确认 digest 和匿名拉取。
