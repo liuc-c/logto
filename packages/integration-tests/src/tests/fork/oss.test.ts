@@ -14,6 +14,7 @@ const expectStatus = async (pendingResponse: Promise<Response>, status: number) 
   return response;
 };
 const hasBranding = () => document.body.textContent?.includes('Powered by');
+const getBodyText = () => document.body.textContent;
 
 const restarting = process.env.FORK_VERIFY_RESTART === '1';
 const clientId = 'fork-acceptance';
@@ -79,7 +80,9 @@ if (restarting) {
     await expectStatus(authorizeDemo(), 400);
     await expectStatus(deviceAuthorize('device-demo-app'), 401);
     for (const path of demoPaths) {
-      await expectStatus(ky.get(`${logtoUrl}${path}`, { throwHttpErrors: false }), 404);
+      const response = await ky.get(`${logtoUrl}${path}`, { throwHttpErrors: false });
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain('text/html');
     }
     await expectStatus(ky.get(`${logtoConsoleUrl}/console`), 200);
   });
@@ -117,13 +120,15 @@ if (restarting) {
       expect(await authorized().get('configs/demo-apps').json()).toEqual({ enabled: true });
     });
 
-    it('disables warmed demos immediately, including static paths and POST authorization', async () => {
+    it('shows the experience 404 page for disabled demos, including static paths, while rejecting authorization', async () => {
       expect(await setDemos(false)).toEqual({ enabled: false });
       for (const path of demoPaths) {
         for (const suffix of ['', '/', '/assets/app.js', '/nested/path']) {
           const response = await ky.get(`${logtoUrl}${path}${suffix}`, { throwHttpErrors: false });
-          expect(response.status).toBe(404);
-          expect(response.headers.get('cache-control')).toBe('no-store');
+          expect(response.status).toBe(200);
+          expect(response.headers.get('content-type')).toContain('text/html');
+          expect(response.headers.get('logto-static-package')).toBe('experience');
+          expect(response.headers.get('cache-control')).toContain('no-store');
         }
       }
       await expectStatus(authorizeDemo(), 400);
@@ -149,6 +154,24 @@ if (restarting) {
         }),
         401
       );
+    });
+
+    it('renders the 404 page for disabled demo routes in a browser', async () => {
+      const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+      try {
+        const page = await browser.newPage();
+        for (const path of demoPaths) {
+          for (const suffix of ['', '/verification-code', '/nested/path']) {
+            const response = await page.goto(`${logtoUrl}${path}${suffix}`, {
+              waitUntil: 'networkidle0',
+            });
+            expect(response?.status()).toBe(200);
+            expect(await page.evaluate(getBodyText)).toContain('404 Not Found');
+          }
+        }
+      } finally {
+        await browser.close();
+      }
     });
 
     it('keeps normal OIDC, device flow, Account Center and admin login available', async () => {

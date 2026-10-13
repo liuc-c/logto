@@ -123,4 +123,23 @@ describe('koaSpaProxy middleware', () => {
     expect(mockProxyMiddleware).not.toBeCalled();
     stub.restore();
   });
+
+  it('should use the built-in experience page for a disabled demo even with custom UI assets', async () => {
+    const stub = Sinon.stub(EnvSet, 'values').value({
+      ...EnvSet.values,
+      isProduction: true,
+    });
+    mockFindDefaultSignInExperience.mockResolvedValue({
+      customUiAssets: { id: 'custom-ui-assets' },
+    });
+
+    const ctx = createContextWithRouteParameters({ url: '/_disabled-demo-app' });
+    ctx.state.isDisabledDemoAppRequest = true;
+
+    await koaSpaProxy({ mountedApps, queries })(ctx, next);
+    expect(mockCustomUiAssetsMiddleware).not.toBeCalled();
+    expect(mockStaticMiddleware).toBeCalled();
+    expect(ctx.request.path).toEqual('/');
+    stub.restore();
+  });
 });
