@@ -1,4 +1,4 @@
-import { ReservedPlanId, SubscriptionRedisCacheKey, ossDefaultQuota } from '@logto/schemas';
+import { ReservedPlanId, SubscriptionRedisCacheKey, personalSelfHostedQuota } from '@logto/schemas';
 import { TtlCache } from '@logto/shared';
 
 import { TenantSubscriptionCache } from '#src/caches/tenant-subscription.js';
@@ -88,13 +88,12 @@ export class SubscriptionLibrary {
   }
 
   /**
-   * Get the entitlements of this self-hosted deployment, derived from the license installed on it.
+   * Get this personal fork's local entitlements and optional installed-license metadata.
    *
    * @remarks
    * Outside Cloud only: on Cloud the tenant subscription is the entitlement source, read through
-   * {@link getSubscriptionData}. Without a license the deployment is plain OSS: the fixed defaults
-   * in `ossDefaultQuota` under the development plan, which is what every quota guard already assumes
-   * outside Cloud, since all of them short-circuit before reading a subscription there.
+   * {@link getSubscriptionData}. Local capabilities always use `personalSelfHostedQuota`, including
+   * without a license or after its grace period. A signed key only supplies plan/period metadata.
    *
    * The license belongs to the deployment rather than to a tenant, so this never touches the
    * Redis-backed `TenantSubscriptionCache`. `LicenseReader` caches the verified key in memory, and
@@ -117,7 +116,7 @@ export class SubscriptionLibrary {
         currentPeriodEnd: now,
         isEnterprisePlan: false,
         status: 'active',
-        quota: { ...ossDefaultQuota },
+        quota: { ...personalSelfHostedQuota },
         systemLimit: {},
       };
     }
@@ -134,7 +133,7 @@ export class SubscriptionLibrary {
       currentPeriodEnd: new Date(exp * 1000).toISOString(),
       isEnterprisePlan: plan === ReservedPlanId.SelfHostedEnterprise,
       status: 'active',
-      quota: license.quota,
+      quota: { ...personalSelfHostedQuota },
       systemLimit: {},
     };
   }

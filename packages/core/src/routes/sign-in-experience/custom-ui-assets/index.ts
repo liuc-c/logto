@@ -88,8 +88,8 @@ export default function customUiAssetsRoutes<T extends ManagementApiRouter>(
   const isSelfHosted = !EnvSet.values.isCloud;
 
   /**
-   * Outside Cloud the quota guard is a no-op. Use effective license entitlements so Bring your UI
-   * falls back to the OSS default when the offline grace period ends.
+   * Outside Cloud, use the personal fork's local capabilities. Authentication, tenant isolation,
+   * storage configuration and archive validation remain required.
    */
   const koaSelfHostedBringYourUiGuard: MiddlewareType = async (_, next) => {
     const { quota: licenseQuota } = await subscription.getSelfHostedSubscription();

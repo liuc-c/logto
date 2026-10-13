@@ -3785,6 +3785,9 @@ importers:
       '@logto/core-kit':
         specifier: workspace:^
         version: link:../toolkit/core-kit
+      '@logto/experience':
+        specifier: workspace:^
+        version: link:../experience
       '@logto/language-kit':
         specifier: workspace:^
         version: link:../toolkit/language-kit

@@ -5,7 +5,7 @@ import koaGuard from '#src/middleware/koa-guard.js';
 import type { RouterInitArgs } from '#src/routes/types.js';
 
 import {
-  assertLicenseGrants,
+  assertSelfHostedFeature,
   assertNotCloud,
   createTenantMemberAuthorization,
   tenantOrganizationId,
@@ -116,9 +116,9 @@ export default function tenantRoutes<T extends AuthedMeRouter>(
 
       const { isMfaRequired } = ctx.guard.body;
 
-      // Turning the requirement off is always allowed, so a lapsed license never locks it on.
+      // The local capability check does not change administrator authorization above.
       if (isMfaRequired) {
-        await assertLicenseGrants('mandatoryMfa');
+        assertSelfHostedFeature('mandatoryMfa');
       }
 
       const organization = await organizations.updateById(tenantOrganizationId, {

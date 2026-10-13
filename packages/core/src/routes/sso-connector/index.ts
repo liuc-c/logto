@@ -376,7 +376,8 @@ export default function singleSignOnConnectorsRoutes<T extends ManagementApiRout
   samlSsoConnectorSigningKeyRoutes(...args);
 
   // TODO: @simeng Remove when IdP initiated SSO is ready for production
-  if (EnvSet.values.isDevFeaturesEnabled) {
+  // This personal fork enables locally implemented IdP-initiated SSO outside Cloud.
+  if (!EnvSet.values.isCloud || EnvSet.values.isDevFeaturesEnabled) {
     ssoConnectorIdpInitiatedAuthConfigRoutes(...args);
   }
 }

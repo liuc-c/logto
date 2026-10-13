@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import mdx from '@mdx-js/rollup';
 import react from '@vitejs/plugin-react';
 import dotenv from 'dotenv';
@@ -18,6 +20,14 @@ dotenv.config({ path: await findUp('.env', {}) });
 const buildConfig = (mode: string): UserConfig => ({
   base: `${process.env.CONSOLE_PUBLIC_URL ?? '/console'}`,
   envDir: '../../',
+  resolve: {
+    alias: [
+      {
+        find: /^@branding\//,
+        replacement: fileURLToPath(new URL('../experience/src/shared/branding/', import.meta.url)),
+      },
+    ],
+  },
   server: {
     port: 5002,
     hmr: {

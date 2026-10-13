@@ -115,8 +115,8 @@ export const getSsoAuthorizationUrl = async (
     const { jti } = await provider.interactionDetails(ctx.req, ctx.res);
 
     if (
-      // TODO: Remove this check when IdP-initiated SSO is fully supported
-      EnvSet.values.isDevFeaturesEnabled &&
+      // The personal fork consumes local IdP-initiated SSO sessions outside development mode.
+      (!EnvSet.values.isCloud || EnvSet.values.isDevFeaturesEnabled) &&
       connectorInstance instanceof SamlConnector
     ) {
       // Check if a IdP-initiated SSO session exists

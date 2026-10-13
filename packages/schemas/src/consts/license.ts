@@ -133,6 +133,21 @@ export const ossDefaultQuota = Object.freeze({
 } satisfies LicenseQuota);
 
 /**
+ * This personal fork enables every locally implemented self-hosted capability without a license.
+ * Keep hosted email disabled: it requires Logto's external email service. This policy is separate
+ * from signed license claims and Cloud subscriptions, so neither is misrepresented or modified.
+ */
+export const personalSelfHostedQuota: Readonly<LicenseQuota> = Object.freeze({
+  hideLogtoBranding: true,
+  bringYourUi: true,
+  idpInitiatedSso: true,
+  consoleCollaboration: true,
+  mandatoryMfa: true,
+  hostedEmail: false,
+  samlApplicationsLimit: null,
+});
+
+/**
  * Resolve the effective entitlements of a self-hosted instance by applying a license key's
  * overrides on top of {@link ossDefaultQuota}. Without a key, the OSS defaults are the answer.
  *

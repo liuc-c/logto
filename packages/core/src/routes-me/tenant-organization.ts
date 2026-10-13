@@ -5,11 +5,11 @@ import {
   getTenantOrganizationId,
   getTenantRole,
   type LicenseQuota,
+  personalSelfHostedQuota,
 } from '@logto/schemas';
 
 import { EnvSet } from '#src/env-set/index.js';
 import RequestError from '#src/errors/RequestError/index.js';
-import LicenseReader from '#src/license/LicenseReader.js';
 import type OrganizationQueries from '#src/queries/organization/index.js';
 import assertThat from '#src/utils/assert-that.js';
 
@@ -27,15 +27,12 @@ export const assertNotCloud = () => {
   );
 };
 
-/**
- * Refuse a change the installed license does not grant. A license past its grace period grants
- * nothing, the same as in `SubscriptionLibrary.getSelfHostedSubscription`.
- */
-export const assertLicenseGrants = async (feature: keyof LicenseQuota) => {
-  const license = await LicenseReader.shared.read(await EnvSet.sharedPool);
-
+/** Local availability is separate from the caller's tenant membership and administrator role. */
+export const assertSelfHostedFeature = (
+  feature: Exclude<keyof LicenseQuota, 'samlApplicationsLimit'>
+) => {
   assertThat(
-    license && Date.parse(license.graceEndsAt) > Date.now() && license.quota[feature],
+    personalSelfHostedQuota[feature],
     new RequestError({ code: 'subscription.limit_exceeded', status: 403, data: { key: feature } })
   );
 };

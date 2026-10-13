@@ -154,8 +154,8 @@ export class QuotaLibrary {
     if (!isCloud) {
       /**
        * Self-hosted plans: the SAML application cap and the IdP-initiated SSO entitlement are the
-       * only limits enforced outside Cloud, and both follow the installed license (the OSS default
-       * without one). Every other key is a Cloud only quota.
+       * only capability checks outside Cloud; the personal fork policy grants both without a cap.
+       * Every other key is a Cloud only quota.
        */
       if (key === 'samlApplicationsLimit') {
         await this.assertSelfHostedSamlApplicationsLimit(consumeUsageCount);
@@ -240,7 +240,7 @@ export class QuotaLibrary {
 
   /**
    * Enforce the SAML application cap of a self-hosted deployment: `samlApplicationsLimit` of the
-   * installed license, or the OSS default (`ossDefaultQuota`) without one. `null` means unlimited.
+   * effective self-hosted policy. `null` means unlimited.
    *
    * Keeps the `application.saml.reach_oss_limit` error OSS has always answered with.
    */
@@ -267,9 +267,7 @@ export class QuotaLibrary {
   };
 
   /**
-   * Enforce the `idpInitiatedSso` entitlement of a self-hosted deployment: granted by the installed
-   * license, locked under the OSS default (`ossDefaultQuota`) without one or once the license's
-   * refresh grace has run out.
+   * Check the `idpInitiatedSso` capability of the self-hosted policy.
    *
    * Answers with the same `subscription.limit_exceeded` error a Cloud plan without the feature gets.
    */

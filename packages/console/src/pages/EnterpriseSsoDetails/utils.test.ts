@@ -36,7 +36,7 @@ describe('shouldShowIdpInitiatedAuthTab', () => {
     ).toBe(false);
   });
 
-  it('returns false for OSS SAML connectors when dev features are disabled', () => {
+  it('returns true for OSS SAML connectors when dev features are disabled', () => {
     expect(
       shouldShowIdpInitiatedAuthTab({
         isCloud: false,
@@ -44,7 +44,7 @@ describe('shouldShowIdpInitiatedAuthTab', () => {
         providerType: SsoProviderType.SAML,
         isIdpInitiatedSsoEnabled: false,
       })
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('returns true for OSS SAML connectors when dev features are enabled', () => {

@@ -21,10 +21,12 @@ const config: Config.InitialOptions = {
         },
       },
     ],
+    '/shared/branding/assets/.*\\.svg$': '<rootDir>/jest.asset-url.cjs',
     '\\.(svg)$': 'jest-transformer-svg',
-    '\\.(png)$': 'jest-transform-stub',
+    '\\.(png|ico)$': 'jest-transform-stub',
   },
   moduleNameMapper: {
+    '^(.*\\.svg)\\?url$': '$1',
     // Ensure CSS modules are stubbed before applying path aliases.
     '\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
     // Stub plain stylesheet imports (e.g. third-party CSS like react-easy-crop).

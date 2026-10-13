@@ -1,26 +1,15 @@
-import { getBrandingLogoUrl } from '@experience/shared/utils/logo';
-import { useContext } from 'react';
-
-import PageContext from '@ac/Providers/PageContextProvider/PageContext';
-import LoadingIcon from '@ac/assets/icons/loading-icon.svg?react';
+import BrandLoading from '@experience/shared/branding/BrandLoading';
+import { useTranslation } from 'react-i18next';
 
 import styles from './index.module.scss';
 
 const GlobalLoading = () => {
-  const { theme, experienceSettings } = useContext(PageContext);
-
-  const logoUrl =
-    experienceSettings &&
-    getBrandingLogoUrl({
-      theme,
-      branding: experienceSettings.branding,
-      isDarkModeEnabled: experienceSettings.color.isDarkModeEnabled,
-    });
+  const { t } = useTranslation();
 
   return (
-    <div className={styles.container}>
-      {logoUrl && <img className={styles.logo} src={logoUrl} alt="logo" />}
-      <LoadingIcon className={styles.spinner} />
+    <div className={styles.container} role="status" aria-busy="true">
+      <BrandLoading size={64} />
+      <span className={styles.message}>{t('account_center.sessions.loading')}</span>
     </div>
   );
 };

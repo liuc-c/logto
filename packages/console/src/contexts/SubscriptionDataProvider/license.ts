@@ -1,7 +1,7 @@
 import { type LicenseQuota } from '@logto/schemas';
 
 import { type Subscription, type SubscriptionQuota } from '@/cloud/types/router';
-import { defaultSubscriptionQuota, defaultTenantResponse } from '@/consts/tenants';
+import { defaultLogtoSku, defaultSubscriptionQuota, defaultTenantResponse } from '@/consts/tenants';
 import { type License } from '@/types/license';
 
 /**
@@ -33,13 +33,21 @@ export const buildSelfHostedSubscription = (license?: License): Subscription => 
 /**
  * Derive the Cloud-shaped quota of a self-hosted deployment from its effective license quota.
  *
- * A license grants a small, fixed set of self-hosted entitlements (`LicenseQuota`) rather than a
- * Cloud SKU quota, and the two vocabularies are disjoint apart from `samlApplicationsLimit`, which
- * keeps the same meaning on both sides. That one key is carried over so the SAML limit notices can
- * read it where Cloud does; every other key keeps its current default outside Cloud, and the
- * feature flags are read from the context's `licenseQuota` instead of being translated.
+ * Reflect local capabilities rather than the Cloud Free-plan placeholders. Entity limits already
+ * short-circuit outside Cloud in Core. External hosted services remain unavailable; these values
+ * do not create a Cloud subscription or provision external infrastructure.
  */
 export const buildSelfHostedSubscriptionQuota = (quota: LicenseQuota): SubscriptionQuota => ({
   ...defaultSubscriptionQuota,
+  ...defaultLogtoSku.quota,
+  mauLimit: null,
+  tokenLimit: null,
+  hostedEmailLimit: 0,
+  hostedEmailDailyLimit: 0,
+  tenantMembersLimit: null,
+  actionsEnabled: true,
+  bringYourUiEnabled: quota.bringYourUi,
+  idpInitiatedSsoEnabled: quota.idpInitiatedSso,
   samlApplicationsLimit: quota.samlApplicationsLimit,
+  customDomainsLimit: 0,
 });

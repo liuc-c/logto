@@ -2,7 +2,7 @@
   "tags": [
     {
       "name": "SAML applications",
-      "description": "SAML (Security Assertion Markup Language) applications represent applications that use SAML protocol for single sign-on (SSO). These endpoints allow you to manage SAML applications, including their configurations and signing certificates."
+      "description": "SAML (Security Assertion Markup Language) applications represent applications that use SAML protocol for single sign-on (SSO). These endpoints allow you to manage SAML applications, including their configurations and signing certificates. This personal self-hosted build has no SAML application count limit."
     }
   ],
   "components": {

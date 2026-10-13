@@ -33,9 +33,6 @@ function OssTenantSettings() {
         <TabNavItem href={`/tenant-settings/${TenantSettingsTabs.Members}`}>
           <DynamicT forKey="tenants.tabs.members" />
         </TabNavItem>
-        <TabNavItem href={`/tenant-settings/${TenantSettingsTabs.License}`}>
-          <DynamicT forKey="tenants.tabs.license" />
-        </TabNavItem>
       </TabNav>
       <Outlet />
     </div>

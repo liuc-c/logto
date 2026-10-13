@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 
-import LoadingSvg from '@/assets/icons/loading-icon.svg?react';
+import BrandLoading from '../../branding/BrandLoading';
 
 import styles from './index.module.scss';
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 const LoadingIcon = ({ className }: Props) => (
-  <LoadingSvg className={classNames(styles.loadingIcon, className)} />
+  <BrandLoading className={classNames(styles.loadingIcon, className)} />
 );
 
 export default LoadingIcon;

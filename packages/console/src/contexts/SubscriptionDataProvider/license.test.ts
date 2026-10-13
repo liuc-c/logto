@@ -1,6 +1,11 @@
-import { LicenseEnv, ReservedPlanId, ossDefaultQuota } from '@logto/schemas';
+import {
+  LicenseEnv,
+  ReservedPlanId,
+  ossDefaultQuota,
+  personalSelfHostedQuota,
+} from '@logto/schemas';
 
-import { defaultSubscriptionQuota, defaultTenantResponse } from '@/consts/tenants';
+import { defaultTenantResponse } from '@/consts/tenants';
 import { type License } from '@/types/license';
 import { getEffectiveLicenseQuota } from '@/utils/license';
 
@@ -45,28 +50,22 @@ describe('buildSelfHostedSubscription', () => {
 });
 
 describe('buildSelfHostedSubscriptionQuota', () => {
-  it('applies the OSS default SAML cap without a license', () => {
-    expect(buildSelfHostedSubscriptionQuota(getEffectiveLicenseQuota())).toStrictEqual({
-      ...defaultSubscriptionQuota,
-      samlApplicationsLimit: ossDefaultQuota.samlApplicationsLimit,
-    });
-  });
-
-  it('carries the SAML cap over from the license and nothing else', () => {
-    expect(
-      buildSelfHostedSubscriptionQuota(getEffectiveLicenseQuota(license, Date.parse('2026-01-30')))
-    ).toStrictEqual({
-      ...defaultSubscriptionQuota,
+  it('reflects unrestricted local capabilities while leaving external services unavailable', () => {
+    expect(buildSelfHostedSubscriptionQuota(personalSelfHostedQuota)).toMatchObject({
+      applicationsLimit: null,
+      resourcesLimit: null,
+      tenantMembersLimit: null,
+      organizationsLimit: null,
       samlApplicationsLimit: null,
+      actionsEnabled: true,
+      bringYourUiEnabled: true,
+      idpInitiatedSsoEnabled: true,
+      mfaEnabled: true,
+      hostedEmailLimit: 0,
+      hostedEmailDailyLimit: 0,
+      customDomainsLimit: 0,
+      consoleSsoConnectorLimit: 0,
     });
-  });
-
-  it('restores the OSS SAML cap at grace expiry, even if the key has not expired', () => {
-    expect(
-      buildSelfHostedSubscriptionQuota(
-        getEffectiveLicenseQuota(license, Date.parse(license.graceEndsAt))
-      )
-    ).toStrictEqual({ ...defaultSubscriptionQuota, samlApplicationsLimit: 3 });
   });
 });
 

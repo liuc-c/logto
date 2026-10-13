@@ -265,6 +265,9 @@ export const getSupplementDocuments = async (
   const supplementDocuments = allSupplementDocuments.filter(
     (supplement) =>
       EnvSet.values.isDevFeaturesEnabled ||
+      // This personal fork exposes only IdP-initiated SSO outside development mode in OSS.
+      (!EnvSet.values.isCloud &&
+        supplement.paths?.['/api/sso-connectors/{id}/idp-initiated-auth-config'] !== undefined) ||
       !supplement.tags?.find((tag) => tag?.name === devFeatureTag)
   );
 

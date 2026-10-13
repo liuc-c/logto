@@ -1,0 +1,57 @@
+.loader {
+  display: block;
+  flex-shrink: 0;
+
+  * {
+    transform-box: view-box;
+  }
+}
+
+.symbol {
+  transform-origin: 32px 32px;
+  animation: spin 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.ring {
+  animation: move-ring 1.2s ease-in-out infinite;
+}
+
+.disc {
+  animation: move-disc 1.2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes move-ring {
+  50% {
+    transform: translateX(-1.86px);
+  }
+}
+
+@keyframes move-disc {
+  50% {
+    transform: translateX(1.86px);
+  }
+}
+
+@keyframes calm {
+  50% {
+    opacity: 45%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .symbol,
+  .ring,
+  .disc {
+    animation: none;
+  }
+
+  .badge {
+    animation: calm 1.6s ease-in-out infinite;
+  }
+}

@@ -2,14 +2,14 @@
 
 基线：公开 Fork `liuc-c/logto`，`@logto/core 1.44.0`，上游提交
 `9449b0224`（完整 SHA 可从 `git rev-parse 9449b0224` 查询）。这是该版本之后的上游开发提交，**不是一个未经修改的 1.44.0 release tag**。
-保留 MPL-2.0、版权声明、包名、认证标识与上游 Dockerfile。两个定制是本 Fork 的正式 OSS 功能，可直接用于生产，不依赖 Cloud、许可证或开发功能开关。
+保留 MPL-2.0、版权声明、包名、认证标识与上游 Dockerfile。演示应用开关与个人品牌是本 Fork 的正式 OSS 功能，可直接用于生产，不依赖 Cloud、许可证或开发功能开关。
 
 ## 设置
 
 | 功能 | 控制台入口 | 未配置时 | 存储和作用域 |
 | --- | --- | --- | --- |
 | 演示应用 | 设置 → 演示应用 | 启用，保持上游行为 | 当前业务租户的 `logto_configs`，键 `demoApps`，值 `{ "enabled": true/false }` |
-| 隐藏 Logto 品牌 | 登录体验 → 品牌 → 隐藏 Logto 品牌 | 不隐藏，保持上游行为 | 当前业务租户既有 `sign_in_experiences.hide_logto_branding` |
+| 个人 liuovo 品牌 | 直接内置于本 Fork | 默认 Logo、网站图标和加载动画均使用 liuovo；不显示 Logto 署名 | 本地构建资源，保留既有 `hide_logto_branding` 字段兼容 |
 
 控制台使用 `admin` tenant 登录；它管理的 OSS 业务租户是 `default`。
 演示设置通过控制台现有 `useApi` 请求业务租户 Management API，**不是**修改管理后台登录租户的配置。
@@ -28,11 +28,13 @@ OIDC 的 `Client.find` 在读取内部客户端缓存前检查策略，因此已
 已签发、由外部资源服务器独立验证的 JWT 仍可在有效期内使用，除非资源服务器另行撤销；重新启用不会重置既有会话或令牌。
 普通应用 OIDC、正常设备授权、Account Center 和管理后台登录不受影响。
 
-品牌设置仅放开已有登录页页脚品牌开关的 OSS 授权限制。保存、公开登录体验 API、页面渲染都使用真实数据库值；关闭“隐藏”后品牌恢复。
-Cloud 套餐规则、Custom UI CSP、其他许可证能力保持原有逻辑。
+个人构建直接内置 liuovo 品牌：正常页头优先使用浅/深色 intro，加载区仅显示一个 loading 徽记。只将 `https://logto.io/logo.svg` 和 `https://logto.io/logo-dark.svg` 两个默认 URL 映射到本地资源，未配置或空的 Logo/favicon 也直接使用内置资源；公司 Logo/favicon 的配置输入已移除，应用和组织的自定义 Logo 保持原有优先级；无需改租户数据库。Console、登录体验、Account Center 和退出完成页均使用本地图标；Apple 图标独立使用 180px PNG。
 
-**首次部署验收操作**：进入业务租户，将“演示应用”关闭，并将“隐藏 Logto 品牌”开启后保存。
-不要用启动 SQL、启动脚本或每次升级重置默认值。本仓库的容器验收在临时数据库完成这两项设置，并重启检查持久化；不会接触生产数据库。
+登录页和账户中心不再渲染 `LogtoSignature`，退出完成页改用 liuovo intro，不显示 `Powered by Logto`。原有品牌开关继续保存并由 API 返回，但在此个人构建中关闭“隐藏”也不会恢复署名。资源来源、范围和验证记录见 [branding-resource-plan.md](./branding-resource-plan.md)。
+Cloud 套餐规则保留。个人自托管构建另外开放自定义 UI 上传 / CSP、Console 协作与强制 MFA、IdP 发起的 SSO，并取消 SAML 应用数量上限；无许可证或过期不影响本地能力。功能范围、存储配置及外部服务边界见 [self-hosted-features.md](./self-hosted-features.md)。
+
+**首次部署验收操作**：进入业务租户，将“演示应用”关闭；核对默认 liuovo 品牌和自定义应用 Logo。
+不要用启动 SQL、启动脚本或每次升级重置默认值。本仓库的容器验收在临时数据库保存演示开关和既有品牌字段，并重启检查持久化；不会接触生产数据库。
 
 ## 镜像与发布
 

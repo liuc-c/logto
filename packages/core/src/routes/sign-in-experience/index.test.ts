@@ -1073,7 +1073,7 @@ describe('PATCH /sign-in-exp customUiCsp', () => {
     expect(guardTenantUsageByKey).toHaveBeenCalledWith('bringYourUiEnabled');
   });
 
-  it('should reject non-empty Custom UI CSP updates outside Cloud', async () => {
+  it('should allow non-empty Custom UI CSP updates outside Cloud', async () => {
     const { requester, updateDefaultSignInExperience, guardTenantUsageByKey } =
       await createCustomUiCspRequester({ isCloud: false });
 
@@ -1083,9 +1083,11 @@ describe('PATCH /sign-in-exp customUiCsp', () => {
       },
     });
 
-    expect(response.status).toEqual(400);
-    expect(updateDefaultSignInExperience).not.toHaveBeenCalled();
-    expect(guardTenantUsageByKey).not.toHaveBeenCalled();
+    expect(response.status).toEqual(200);
+    expect(updateDefaultSignInExperience).toHaveBeenCalledWith({
+      customUiCsp: { scriptSrc: ['https://example.com'] },
+    });
+    expect(guardTenantUsageByKey).toHaveBeenCalledWith('bringYourUiEnabled');
   });
 
   it('should allow hiding the Logto branding outside Cloud without a license', async () => {
@@ -1136,7 +1138,7 @@ describe('PATCH /sign-in-exp customUiCsp', () => {
     expect(updateDefaultSignInExperience).toHaveBeenCalledWith({ customUiCsp });
   });
 
-  it('should reject non-empty Custom UI CSP updates outside Cloud with a license that only grants hiding the branding', async () => {
+  it('should allow non-empty Custom UI CSP updates outside Cloud with a license that only grants hiding the branding', async () => {
     installLicense({ hideLogtoBranding: true });
     const { requester, updateDefaultSignInExperience } = await createCustomUiCspRequester({
       isCloud: false,
@@ -1146,8 +1148,10 @@ describe('PATCH /sign-in-exp customUiCsp', () => {
       customUiCsp: { scriptSrc: ['https://example.com'] },
     });
 
-    expect(response.status).toEqual(400);
-    expect(updateDefaultSignInExperience).not.toHaveBeenCalled();
+    expect(response.status).toEqual(200);
+    expect(updateDefaultSignInExperience).toHaveBeenCalledWith({
+      customUiCsp: { scriptSrc: ['https://example.com'] },
+    });
   });
 
   it('should not read the license on Cloud', async () => {

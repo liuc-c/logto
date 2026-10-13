@@ -82,8 +82,8 @@ const useSubscriptionData: () => SubscriptionContext & { isLoading: boolean } = 
 
   const logtoSkus = useMemo(() => formatLogtoSkusResponses(fetchedLogtoSkus), [fetchedLogtoSkus]);
 
-  // Outside Cloud the installed license is the entitlement source, and the Cloud subscription is
-  // never fetched. Without a license this is the fixed `dev` plan Console has always assumed.
+  // Outside Cloud, license metadata is optional and local capabilities use the personal policy.
+  // The Cloud subscription is never fetched.
   const currentSubscription = useMemo(
     () => (isCloud ? cloudSubscription : undefined) ?? buildSelfHostedSubscription(license),
     [cloudSubscription, license]

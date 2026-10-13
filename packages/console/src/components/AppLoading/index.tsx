@@ -1,13 +1,15 @@
-import Logo from '@/assets/images/logo.svg?react';
-import { Daisy as Spinner } from '@/ds-components/Spinner';
+import BrandLoading from '@branding/BrandLoading';
+import { useTranslation } from 'react-i18next';
 
 import styles from './index.module.scss';
 
 function AppLoading() {
+  const { t } = useTranslation(undefined, { keyPrefix: 'admin_console' });
+
   return (
-    <div className={styles.container}>
-      <Logo />
-      <Spinner />
+    <div className={styles.container} role="status" aria-busy="true">
+      <BrandLoading size={64} />
+      <span className={styles.message}>{t('general.loading')}</span>
     </div>
   );
 }

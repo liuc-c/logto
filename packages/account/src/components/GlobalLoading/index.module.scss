@@ -9,6 +9,7 @@
   justify-content: center;
   gap: _.unit(6);
   background: var(--color-bg-body-base);
+  color: var(--color-type-primary);
 }
 
 :global(body.mobile) {
@@ -17,23 +18,7 @@
   }
 }
 
-.logo {
-  max-height: 40px;
-  width: auto;
-  object-fit: contain;
-}
-
-.spinner {
-  color: var(--color-type-primary);
-  animation: rotating 1s steps(12, end) infinite;
-}
-
-@keyframes rotating {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+.message {
+  font: var(--font-body-2);
+  color: var(--color-type-secondary);
 }

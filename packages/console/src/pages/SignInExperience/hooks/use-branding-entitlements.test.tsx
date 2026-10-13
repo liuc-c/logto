@@ -45,11 +45,11 @@ describe('useBrandingEntitlements', () => {
   beforeEach(resetMockEnv);
 
   describe('outside Cloud', () => {
-    it('allows OSS branding without unlocking Custom UI CSP', () => {
+    it('enables branding and Custom UI CSP without a license', () => {
       expect(renderWithContext({})).toStrictEqual({
         isHideLogtoBrandingAvailable: true,
         isHideLogtoBrandingEnabled: true,
-        isCustomUiCspEnabled: false,
+        isCustomUiCspEnabled: true,
       });
     });
 
@@ -94,7 +94,7 @@ describe('useBrandingEntitlements', () => {
         renderWithContext({
           currentSubscriptionQuota: { ...defaultSubscriptionQuota, bringYourUiEnabled: true },
         })
-      ).toMatchObject({ isHideLogtoBrandingEnabled: true, isCustomUiCspEnabled: false });
+      ).toMatchObject({ isHideLogtoBrandingEnabled: true, isCustomUiCspEnabled: true });
     });
   });
 

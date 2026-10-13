@@ -4,10 +4,11 @@ import { EnvSet } from '#src/env-set/index.js';
 import { type DeepPartial } from '#src/test-utils/tenant.js';
 import { createContextWithRouteParameters } from '#src/utils/test-utils.js';
 
-import { assembleSwaggerDocument } from './documents.js';
+import { assembleSwaggerDocument, getSupplementDocuments } from './documents.js';
 import { devFeatureSchemaExtension } from './general.js';
 
 const originalIsDevFeaturesEnabled = EnvSet.values.isDevFeaturesEnabled;
+const originalIsCloud = EnvSet.values.isCloud;
 
 const setDevFeaturesEnabled = (isDevFeaturesEnabled: boolean) => {
   // eslint-disable-next-line @silverhand/fp/no-mutation -- Tests need to cover both dev-feature states.
@@ -127,5 +128,37 @@ describe('assembleSwaggerDocument', () => {
         },
       },
     });
+  });
+});
+
+describe('personal self-hosted OpenAPI operations', () => {
+  const idpPath = '/api/sso-connectors/{id}/idp-initiated-auth-config';
+  const uploadPath = '/api/sign-in-exp/default/custom-ui-assets';
+
+  afterEach(() => {
+    Reflect.set(EnvSet.values, 'isCloud', originalIsCloud);
+    setDevFeaturesEnabled(originalIsDevFeaturesEnabled);
+  });
+
+  it('includes local upload and IdP configuration in production documentation', async () => {
+    Reflect.set(EnvSet.values, 'isCloud', false);
+    setDevFeaturesEnabled(false);
+    const supplements = await getSupplementDocuments('routes', {
+      excludeDirectories: ['interaction'],
+    });
+    expect(supplements.some(({ paths }) => paths?.[idpPath]?.put)).toBe(true);
+    expect(supplements.some(({ paths }) => paths?.[uploadPath]?.post)).toBe(true);
+    expect(
+      supplements.filter(({ tags }) => tags?.some((tag) => tag?.name === 'Dev feature'))
+    ).toHaveLength(1);
+  });
+
+  it('keeps IdP configuration out of Cloud documentation when development mode is off', async () => {
+    Reflect.set(EnvSet.values, 'isCloud', true);
+    setDevFeaturesEnabled(false);
+    const supplements = await getSupplementDocuments('routes', {
+      excludeDirectories: ['interaction'],
+    });
+    expect(supplements.some(({ paths }) => paths?.[idpPath]?.put)).toBe(false);
   });
 });

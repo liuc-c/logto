@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+/* eslint-disable max-lines -- Keep the SSO flow and session security cases together. */
 import { createMockUtils } from '@logto/shared/esm';
 import type { Provider } from 'oidc-provider';
 import Sinon from 'sinon';
@@ -363,10 +363,11 @@ describe('Single sign on util methods tests', () => {
     });
   });
 
-  describe('getSsoAuthorizationUrl tests with idp initiated sso session', () => {
+  describe('getSsoAuthorizationUrl with local IdP-initiated sessions outside dev mode', () => {
     const stub = Sinon.stub(EnvSet, 'values').value({
       ...EnvSet.values,
-      isDevFeaturesEnabled: true,
+      isCloud: false,
+      isDevFeaturesEnabled: false,
     });
 
     const payload = {

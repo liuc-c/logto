@@ -207,7 +207,8 @@ export default function authnRoutes<T extends AnonymousRouter>(
       const { RelayState: jti } = body;
 
       // IdP initiated SSO does not provide the RelayState, we need to check if the IdP initiated SSO flow is enabled.
-      if (!jti && EnvSet.values.isDevFeaturesEnabled) {
+      // Only IdP-initiated SSO is enabled here; other dev features retain their own guards.
+      if (!jti && (!EnvSet.values.isCloud || EnvSet.values.isDevFeaturesEnabled)) {
         const idpInitiatedAuthConfig =
           await queries.ssoConnectors.getIdpInitiatedAuthConfigByConnectorId(connectorId);
 
@@ -220,9 +221,7 @@ export default function authnRoutes<T extends AnonymousRouter>(
           })
         );
 
-        // Self-hosted plans: the config can outlive the license entitlement (e.g. the license
-        // expired or was replaced), so check it on every IdP initiated request, not only when
-        // saving the config. Cloud is not enforced here.
+        // Check the local capability on each IdP-initiated request as well as when saving config.
         if (!EnvSet.values.isCloud) {
           await quota.guardTenantUsageByKey('idpInitiatedSsoEnabled');
         }

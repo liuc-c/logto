@@ -124,7 +124,7 @@
       },
       "patch": {
         "summary": "Update default sign-in experience settings",
-        "description": "Update the default sign-in experience settings with the provided data.",
+        "description": "Update the default sign-in experience settings with the provided data. Custom UI CSP is freely configurable in this personal self-hosted build; source validation and Management API authorization still apply.",
         "parameters": [
           {
             "name": "removeUnusedDemoSocialConnector",

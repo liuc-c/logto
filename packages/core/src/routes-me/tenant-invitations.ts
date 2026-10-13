@@ -21,7 +21,7 @@ import assertThat from '#src/utils/assert-that.js';
 
 import { withTenantMembership } from './tenant-membership.js';
 import {
-  assertLicenseGrants,
+  assertSelfHostedFeature,
   assertNotCloud,
   createTenantMemberAuthorization,
   tenantOrganizationId,
@@ -49,9 +49,8 @@ const invitationIdGuard = z.object({ invitationId: z.string().min(1) });
  * token is what lets an invitee create their account anyway; an invitee who already has one simply
  * signs in with it. The Console accept page then accepts the invitation as the signed-in invitee.
  *
- * Inviting someone and accepting an invitation take the `consoleCollaboration` license entitlement,
- * since both add a member; revoking and deleting an invitation do not, so a lapsed license
- * can still be cleaned up after.
+ * Inviting and accepting use the local `consoleCollaboration` capability. Administrator checks,
+ * invitee identity checks and membership transactions apply independently of that capability.
  *
  * @see {@link tenantRoutes} for why these routes live on `/me`.
  */
@@ -219,7 +218,7 @@ export default function tenantInvitationRoutes<T extends AuthedMeRouter>(
     async (ctx, next) => {
       assertNotCloud();
       await assertAdmin(ctx.auth.id);
-      await assertLicenseGrants('consoleCollaboration');
+      assertSelfHostedFeature('consoleCollaboration');
 
       const { invitee } = ctx.guard.body;
       const invitees = [...new Set([invitee].flat().map((email) => email.toLowerCase()))];
@@ -271,7 +270,7 @@ export default function tenantInvitationRoutes<T extends AuthedMeRouter>(
     async (ctx, next) => {
       assertNotCloud();
       await assertAdmin(ctx.auth.id);
-      await assertLicenseGrants('consoleCollaboration');
+      assertSelfHostedFeature('consoleCollaboration');
 
       const invitation = await findTenantInvitation(ctx.guard.params.invitationId);
 
@@ -383,7 +382,7 @@ export default function tenantInvitationRoutes<T extends AuthedMeRouter>(
     async (ctx, next) => {
       assertNotCloud();
 
-      await assertLicenseGrants('consoleCollaboration');
+      assertSelfHostedFeature('consoleCollaboration');
 
       const { invitationId } = ctx.guard.params;
       const { id: userId } = ctx.auth;

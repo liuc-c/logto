@@ -235,7 +235,7 @@ if (restarting) {
       await expectStatus(deviceAuthorize('device-demo-app'), 200);
     });
 
-    it('renders both saved OSS branding choices in a real browser without a license', async () => {
+    it('stores OSS branding choices while the personal build always omits attribution', async () => {
       const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
       try {
         const page = await browser.newPage();
@@ -249,9 +249,9 @@ if (restarting) {
           await page.goto(authUrl(state.appId, `${logtoUrl}/callback`).href, {
             waitUntil: 'networkidle0',
           });
-          expect(await page.evaluate(hasBranding)).toBe(!hideLogtoBranding);
+          expect(await page.evaluate(hasBranding)).toBe(false);
           await page.reload({ waitUntil: 'networkidle0' });
-          expect(await page.evaluate(hasBranding)).toBe(!hideLogtoBranding);
+          expect(await page.evaluate(hasBranding)).toBe(false);
         }
       } finally {
         await browser.close();

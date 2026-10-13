@@ -1,4 +1,9 @@
-import { LicenseEnv, ReservedPlanId, ossDefaultQuota } from '@logto/schemas';
+import {
+  LicenseEnv,
+  ReservedPlanId,
+  ossDefaultQuota,
+  personalSelfHostedQuota,
+} from '@logto/schemas';
 import { type Nullable } from '@silverhand/essentials';
 import { act, renderHook } from '@testing-library/react';
 import useSWR from 'swr';
@@ -43,7 +48,7 @@ describe('useLicense', () => {
     jest.useRealTimers();
   });
 
-  it('expires entitlements without a reload and preserves the installed license', () => {
+  it('keeps local capabilities at grace expiry and preserves the installed license', () => {
     const { result } = renderHook(useLicense);
     expect(result.current.licenseQuota.consoleCollaboration).toBe(true);
 
@@ -51,14 +56,14 @@ describe('useLicense', () => {
       jest.advanceTimersByTime(1000);
     });
 
-    expect(result.current.licenseQuota).toEqual(ossDefaultQuota);
+    expect(result.current.licenseQuota).toEqual(personalSelfHostedQuota);
     expect(result.current.license).toBe(license);
   });
 
-  it('restores entitlements when a refreshed license arrives', () => {
+  it('keeps local capabilities when a refreshed license arrives', () => {
     jest.setSystemTime(Date.parse(license.graceEndsAt));
     const { result, rerender } = renderHook(useLicense);
-    expect(result.current.licenseQuota).toEqual(ossDefaultQuota);
+    expect(result.current.licenseQuota).toEqual(personalSelfHostedQuota);
 
     mockLicense({ ...license, graceEndsAt: '2026-03-02T00:00:00.000Z' });
     rerender();
@@ -77,13 +82,13 @@ describe('useLicense', () => {
     act(() => {
       jest.advanceTimersByTime(Date.parse(license.graceEndsAt) - Date.now());
     });
-    expect(result.current.licenseQuota).toEqual(ossDefaultQuota);
+    expect(result.current.licenseQuota).toEqual(personalSelfHostedQuota);
   });
 
-  it('uses OSS defaults without a license', () => {
+  it('grants all local capabilities without a license', () => {
     mockLicense(null);
     const { result } = renderHook(useLicense);
-    expect(result.current.licenseQuota).toEqual(ossDefaultQuota);
+    expect(result.current.licenseQuota).toEqual(personalSelfHostedQuota);
     expect(result.current.license).toBeUndefined();
   });
 });

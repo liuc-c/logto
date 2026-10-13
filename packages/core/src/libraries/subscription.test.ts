@@ -1,4 +1,9 @@
-import { ReservedPlanId, ossDefaultQuota, resolveLicenseQuota } from '@logto/schemas';
+import {
+  ReservedPlanId,
+  ossDefaultQuota,
+  personalSelfHostedQuota,
+  resolveLicenseQuota,
+} from '@logto/schemas';
 import { TtlCache } from '@logto/shared';
 import { createMockUtils, pickDefault } from '@logto/shared/esm';
 
@@ -194,7 +199,7 @@ describe('get subscription data with cache expiration', () => {
 describe('get self-hosted subscription data', () => {
   const { subscription } = new MockTenant(undefined);
 
-  it('should derive the subscription from the installed license', async () => {
+  it('should preserve license metadata while granting every local capability', async () => {
     const payload = buildLicensePayload({
       plan: ReservedPlanId.SelfHostedPro,
       quota: { hideLogtoBranding: true, samlApplicationsLimit: null },
@@ -215,11 +220,7 @@ describe('get self-hosted subscription data', () => {
       currentPeriodEnd: new Date(payload.exp * 1000).toISOString(),
       isEnterprisePlan: false,
       status: 'active',
-      quota: {
-        ...ossDefaultQuota,
-        hideLogtoBranding: true,
-        samlApplicationsLimit: null,
-      },
+      quota: personalSelfHostedQuota,
       systemLimit: {},
     });
     // The license belongs to the deployment rather than to a tenant, so it is read through the
@@ -242,7 +243,7 @@ describe('get self-hosted subscription data', () => {
     expect(isEnterprisePlan).toBe(true);
   });
 
-  it('should fall back to the OSS defaults without a license', async () => {
+  it('should grant local capabilities without a license', async () => {
     // eslint-disable-next-line unicorn/no-useless-undefined -- `undefined` is the reader's answer for a deployment with no license key installed, not a redundant argument.
     readLicense.mockResolvedValueOnce(undefined);
 
@@ -252,9 +253,29 @@ describe('get self-hosted subscription data', () => {
       planId: ReservedPlanId.Development,
       isEnterprisePlan: false,
       status: 'active',
-      quota: ossDefaultQuota,
+      quota: personalSelfHostedQuota,
       systemLimit: {},
     });
+  });
+
+  it('should allow more than three SAML applications and IdP SSO through the real local quota guard', async () => {
+    // eslint-disable-next-line unicorn/no-useless-undefined -- No installed license is the case under test.
+    readLicense.mockResolvedValue(undefined);
+    const tenant = new MockTenant(undefined);
+    const getUsage = jest
+      .spyOn(tenant.queries.tenantUsage, 'getSelfComputedUsageByKey')
+      .mockResolvedValue(3);
+
+    await expect(
+      tenant.libraries.quota.guardTenantUsageByKey('samlApplicationsLimit', {
+        consumeUsageCount: 4,
+      })
+    ).resolves.toBeUndefined();
+    await expect(
+      tenant.libraries.quota.guardTenantUsageByKey('idpInitiatedSsoEnabled')
+    ).resolves.toBeUndefined();
+    expect(getUsage).not.toHaveBeenCalled();
+    expect(mockGetTenantSubscription).not.toHaveBeenCalled();
   });
 
   it('should remain entitled when the signed key is past exp but still within grace', async () => {
@@ -270,11 +291,11 @@ describe('get self-hosted subscription data', () => {
 
     await expect(subscription.getSelfHostedSubscription()).resolves.toMatchObject({
       planId: ReservedPlanId.SelfHostedPro,
-      quota: { hideLogtoBranding: true },
+      quota: personalSelfHostedQuota,
     });
   });
 
-  it('should fall back to OSS defaults after the refresh grace period', async () => {
+  it('should keep local capabilities after the refresh grace period', async () => {
     const payload = buildLicensePayload({ quota: { hideLogtoBranding: true } });
     const graceEndsAt = new Date(Date.now() - 1).toISOString();
     readLicense.mockResolvedValueOnce({
@@ -287,7 +308,7 @@ describe('get self-hosted subscription data', () => {
 
     await expect(subscription.getSelfHostedSubscription()).resolves.toMatchObject({
       planId: ReservedPlanId.Development,
-      quota: ossDefaultQuota,
+      quota: personalSelfHostedQuota,
     });
   });
 

@@ -1,10 +1,8 @@
 import { generateDarkColor } from '@logto/core-kit';
-import { Theme } from '@logto/schemas';
 import { useMemo, useCallback, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import LogoAndFavicon from '@/components/ImageInputs/LogoAndFavicon';
 import Button from '@/ds-components/Button';
 import Card from '@/ds-components/Card';
 import ColorPicker from '@/ds-components/ColorPicker';
@@ -26,7 +24,7 @@ function BrandingForm() {
     unregister,
     setValue,
     control,
-    formState: { errors, isDirty },
+    formState: { isDirty },
   } = useFormContext<SignInExperienceForm>();
   const { isHideLogtoBrandingAvailable, isHideLogtoBrandingEnabled } = useBrandingEntitlements();
 
@@ -71,17 +69,6 @@ function BrandingForm() {
           )}
         />
       </FormField>
-      <LogoAndFavicon
-        control={control}
-        register={register}
-        theme={Theme.Light}
-        type="company_logo"
-        logo={{ name: 'branding.logoUrl', error: errors.branding?.logoUrl }}
-        favicon={{
-          name: 'branding.favicon',
-          error: errors.branding?.favicon,
-        }}
-      />
       <FormField title="sign_in_exp.color.dark_mode">
         <Switch
           label={t('sign_in_exp.color.dark_mode_description')}
@@ -89,39 +76,26 @@ function BrandingForm() {
         />
       </FormField>
       {isDarkModeEnabled && (
-        <>
-          <FormField title="sign_in_exp.color.dark_primary_color">
-            <Controller
-              name="color.darkPrimaryColor"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <ColorPicker value={value} onChange={onChange} />
-              )}
-            />
-            {calculatedDarkPrimaryColor !== darkPrimaryColor && (
-              <div className={styles.darkModeTip}>
-                {t('sign_in_exp.color.dark_mode_reset_tip')}
-                <Button
-                  type="text"
-                  size="small"
-                  title="sign_in_exp.color.reset"
-                  onClick={handleResetColor}
-                />
-              </div>
-            )}
-          </FormField>
-          <LogoAndFavicon
+        <FormField title="sign_in_exp.color.dark_primary_color">
+          <Controller
+            name="color.darkPrimaryColor"
             control={control}
-            register={register}
-            theme={Theme.Dark}
-            type="company_logo"
-            logo={{ name: 'branding.darkLogoUrl', error: errors.branding?.darkLogoUrl }}
-            favicon={{
-              name: 'branding.darkFavicon',
-              error: errors.branding?.darkFavicon,
-            }}
+            render={({ field: { onChange, value } }) => (
+              <ColorPicker value={value} onChange={onChange} />
+            )}
           />
-        </>
+          {calculatedDarkPrimaryColor !== darkPrimaryColor && (
+            <div className={styles.darkModeTip}>
+              {t('sign_in_exp.color.dark_mode_reset_tip')}
+              <Button
+                type="text"
+                size="small"
+                title="sign_in_exp.color.reset"
+                onClick={handleResetColor}
+              />
+            </div>
+          )}
+        </FormField>
       )}
       <HideLogtoBrandingField
         variant={isHideLogtoBrandingAvailable ? 'switch' : 'oss-upsell'}

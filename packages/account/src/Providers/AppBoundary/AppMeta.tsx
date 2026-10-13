@@ -1,5 +1,8 @@
-import defaultAppleTouchLogo from '@experience/shared/assets/apple-touch-icon.png';
-import defaultFavicon from '@experience/shared/assets/favicon.png';
+import {
+  appleTouchIcon,
+  favicon as defaultFavicon,
+  faviconIco,
+} from '@experience/shared/branding/assets';
 import { type SignInExperienceResponse } from '@experience/shared/types';
 import { Theme } from '@logto/schemas';
 import { conditionalString } from '@silverhand/essentials';
@@ -33,14 +36,17 @@ const themeToFavicon = Object.freeze({
 
 const AppMeta = () => {
   const { experienceSettings, accountCenterSettings, theme, platform } = useContext(PageContext);
-  const favicon =
-    experienceSettings?.branding[themeToFavicon[theme]] ?? experienceSettings?.branding.favicon;
+  const favicon = [
+    experienceSettings?.branding[themeToFavicon[theme]],
+    experienceSettings?.branding.favicon,
+  ].find(Boolean);
 
   return (
     <Helmet>
       <html lang={i18next.language} dir={i18next.dir()} data-theme={theme} />
-      <link rel="shortcut icon" href={favicon ?? defaultFavicon} />
-      <link rel="apple-touch-icon" href={favicon ?? defaultAppleTouchLogo} sizes="180x180" />
+      <link rel="shortcut icon" href={favicon ?? faviconIco} />
+      <link rel="icon" href={favicon ?? defaultFavicon} />
+      <link rel="apple-touch-icon" href={appleTouchIcon} sizes="180x180" />
       {accountCenterSettings?.customCss && <style>{accountCenterSettings.customCss}</style>}
       <body
         className={classNames(

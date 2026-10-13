@@ -8,6 +8,14 @@
   display: flex;
   align-items: center;
 
+  .logoButton {
+    display: flex;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
   .logo {
     width: auto;
     height: 28px;

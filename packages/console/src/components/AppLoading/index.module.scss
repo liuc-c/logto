@@ -8,8 +8,10 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  gap: _.unit(4);
+}
 
-  svg {
-    margin-bottom: _.unit(8);
-  }
+.message {
+  font: var(--font-body-2);
+  color: var(--color-text-secondary);
 }

@@ -1,3 +1,4 @@
+import { personalSelfHostedQuota } from '@logto/schemas';
 import { type Nullable } from '@silverhand/essentials';
 import { HTTPError } from 'ky';
 import { useCallback, useEffect, useState } from 'react';
@@ -5,7 +6,6 @@ import useSWR from 'swr';
 
 import { isCloud } from '@/consts/env';
 import { type License } from '@/types/license';
-import { getEffectiveLicenseQuota } from '@/utils/license';
 import { shouldRetryOnError } from '@/utils/request';
 
 import useApi, { RequestError } from './use-api';
@@ -69,7 +69,8 @@ const useLicense = () => {
 
   return {
     license: data ?? undefined,
-    licenseQuota: getEffectiveLicenseQuota(data ?? undefined),
+    // This personal build's local capabilities never depend on an installed key or its expiry.
+    licenseQuota: personalSelfHostedQuota,
     // A retry after a failure is not the first load and must not send Console back to its loading
     // screen.
     isLoading: isLoading && !error,

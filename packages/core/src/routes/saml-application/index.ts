@@ -55,7 +55,7 @@ export default function samlApplicationRoutes<T extends ManagementApiRouter>(
 
   router.post(
     '/saml-applications',
-    // Outside Cloud, the cap follows the installed license: 3 without one, lifted by a Pro license.
+    // Outside Cloud, the personal fork policy allows unlimited SAML applications.
     koaQuotaGuard({ key: 'samlApplicationsLimit', quota }),
     koaGuard({
       body: samlApplicationCreateGuard,

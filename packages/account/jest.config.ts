@@ -9,10 +9,12 @@ const config: Config.InitialOptions = {
   coverageReporters: ['text-summary', 'lcov'],
   transform: {
     '^.+\\.(t|j)sx?$': '<rootDir>/jest.transform.cjs',
+    '/shared/branding/assets/.*\\.svg$': '<rootDir>/../experience/jest.asset-url.cjs',
     '\\.(svg)$': 'jest-transformer-svg',
-    '\\.(png)$': 'jest-transform-stub',
+    '\\.(png|ico)$': 'jest-transform-stub',
   },
   moduleNameMapper: {
+    '^(.*\\.svg)\\?url$': '$1',
     // Ensure CSS modules are stubbed before applying path aliases.
     '\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
     '\\.(css|sass|scss)$': 'identity-obj-proxy',

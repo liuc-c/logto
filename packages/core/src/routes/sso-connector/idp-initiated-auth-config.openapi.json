@@ -1,12 +1,5 @@
 {
-  "tags": [
-    {
-      "name": "Cloud only"
-    },
-    {
-      "name": "Dev feature"
-    }
-  ],
+  "tags": [{ "name": "Dev feature" }],
   "paths": {
     "/api/sso-connectors/{id}/idp-initiated-auth-config": {
       "get": {
@@ -23,7 +16,7 @@
       },
       "put": {
         "summary": "Set IdP initiated auth config",
-        "description": "Set IdP initiated authentication config for a given SAML SSO connector. Any existing IdP initiated auth config will be overwritten.",
+        "description": "Set IdP initiated authentication config for a given SAML SSO connector. Any existing IdP initiated auth config will be overwritten. Available without a license or development mode in this personal self-hosted build; Cloud retains its development and subscription guards.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -54,7 +47,7 @@
             "description": "The updated IdP initiated auth config."
           },
           "403": {
-            "description": "IdP initiated SSO is not included in the current plan. On a self-hosted deployment, the installed license does not grant it."
+            "description": "Management API authorization is insufficient or IdP initiated SSO is not included in the Cloud subscription."
           },
           "404": {
             "description": "SSO connector or application not found."
