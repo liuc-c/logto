@@ -4,7 +4,6 @@ import { builtInLanguages } from '@logto/phrases-experience';
 import {
   CaptchaType,
   ForgotPasswordMethod,
-  ossDefaultQuota,
   type CreateSignInExperience,
   type SignInExperience,
 } from '@logto/schemas';
@@ -26,7 +25,6 @@ import {
 import { WellKnownCache } from '#src/caches/well-known.js';
 import { EnvSet } from '#src/env-set/index.js';
 import RequestError from '#src/errors/RequestError/index.js';
-import type { SubscriptionLibrary } from '#src/libraries/subscription.js';
 import { ssoConnectorFactories } from '#src/sso/index.js';
 import { mockSsoConnectorLibrary } from '#src/test-utils/mock-libraries.js';
 
@@ -76,12 +74,6 @@ const connectorLibrary = createConnectorLibrary(queries, {
 
 const getLogtoConnectors = jest.spyOn(connectorLibrary, 'getLogtoConnectors');
 
-const getSelfHostedSubscription = jest.fn(async () => ({
-  quota: { ...ossDefaultQuota, hideLogtoBranding: false as boolean },
-}));
-// Only the self-hosted entitlement reader is used by the sign-in experience library.
-const subscription = { getSelfHostedSubscription } as unknown as SubscriptionLibrary;
-
 const { createSignInExperienceLibrary, getForgotPasswordAvailability } = await import('./index.js');
 const {
   validateLanguageInfo,
@@ -94,8 +86,7 @@ const {
   queries,
   connectorLibrary,
   mockSsoConnectorLibrary,
-  new WellKnownCache('foo', new TtlCache()),
-  subscription
+  new WellKnownCache('foo', new TtlCache())
 );
 
 const getPublicSignInExperience = (signInExperience: SignInExperience) => {
@@ -286,43 +277,16 @@ const setIsCloud = (isCloud: boolean) => {
 };
 
 describe('getFullSignInExperience() hideLogtoBranding', () => {
-  const originalIsCloud = EnvSet.values.isCloud;
-
-  beforeEach(() => {
+  it.each([false, true])('honors the saved OSS branding choice (%s)', async (saved) => {
     findDefaultSignInExperience.mockResolvedValueOnce({
       ...mockSignInExperience,
-      hideLogtoBranding: true,
+      hideLogtoBranding: saved,
     });
     getLogtoConnectors.mockResolvedValueOnce([]);
     findAllCustomProfileFields.mockResolvedValueOnce([]);
     mockSsoConnectorLibrary.getAvailableSsoConnectors.mockResolvedValueOnce([]);
-  });
-
-  afterEach(() => {
-    setIsCloud(originalIsCloud);
-  });
-
-  it.each([false, true])(
-    'should mask the saved value by the license outside Cloud (granted: %s)',
-    async (granted) => {
-      setIsCloud(false);
-      getSelfHostedSubscription.mockResolvedValueOnce({
-        quota: { ...ossDefaultQuota, hideLogtoBranding: granted },
-      });
-
-      const { hideLogtoBranding } = await getFullSignInExperience({ locale: 'en' });
-
-      expect(hideLogtoBranding).toBe(granted);
-    }
-  );
-
-  it('should not read the license on Cloud', async () => {
-    setIsCloud(true);
-
-    const { hideLogtoBranding } = await getFullSignInExperience({ locale: 'en' });
-
-    expect(hideLogtoBranding).toBe(true);
-    expect(getSelfHostedSubscription).not.toHaveBeenCalled();
+    const result = await getFullSignInExperience({ locale: 'en' });
+    expect(result.hideLogtoBranding).toBe(saved);
   });
 });
 

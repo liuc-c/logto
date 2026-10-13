@@ -3,15 +3,7 @@ import { useContext } from 'react';
 import { isCloud } from '@/consts/env';
 import { SubscriptionDataContext } from '@/contexts/SubscriptionDataProvider';
 
-/**
- * Whether hiding the Logto branding and configuring the Custom UI CSP are available.
- *
- * On Cloud, both fields are always part of the form, and the tenant subscription decides whether
- * they are enabled through the shared `bringYourUiEnabled` quota. On a self-hosted deployment, each
- * one comes with its own entitlement in the installed license: hiding the branding with
- * `hideLogtoBranding`, and the Custom UI CSP with `bringYourUi`, which it is part of. Without a
- * license, neither is available, as in plain OSS.
- */
+/** OSS branding is freely configurable; Custom UI CSP retains its own entitlement. */
 const useBrandingEntitlements = () => {
   const { currentSubscriptionQuota, licenseQuota } = useContext(SubscriptionDataContext);
 
@@ -28,7 +20,7 @@ const useBrandingEntitlements = () => {
     };
   }
 
-  const isHideLogtoBrandingEnabled = licenseQuota.hideLogtoBranding;
+  const isHideLogtoBrandingEnabled = true;
 
   return {
     isHideLogtoBrandingAvailable: isHideLogtoBrandingEnabled,

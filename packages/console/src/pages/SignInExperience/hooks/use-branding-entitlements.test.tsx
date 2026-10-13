@@ -45,10 +45,10 @@ describe('useBrandingEntitlements', () => {
   beforeEach(resetMockEnv);
 
   describe('outside Cloud', () => {
-    it('keeps both features locked without a license', () => {
+    it('allows OSS branding without unlocking Custom UI CSP', () => {
       expect(renderWithContext({})).toStrictEqual({
-        isHideLogtoBrandingAvailable: false,
-        isHideLogtoBrandingEnabled: false,
+        isHideLogtoBrandingAvailable: true,
+        isHideLogtoBrandingEnabled: true,
         isCustomUiCspEnabled: false,
       });
     });
@@ -60,8 +60,8 @@ describe('useBrandingEntitlements', () => {
           licenseQuota: ossDefaultQuota,
         })
       ).toStrictEqual({
-        isHideLogtoBrandingAvailable: false,
-        isHideLogtoBrandingEnabled: false,
+        isHideLogtoBrandingAvailable: true,
+        isHideLogtoBrandingEnabled: true,
         isCustomUiCspEnabled: false,
       });
     });
@@ -76,15 +76,15 @@ describe('useBrandingEntitlements', () => {
       });
     });
 
-    it('unlocks each feature by its own license entitlement', () => {
+    it('keeps Custom UI CSP dependent on its own entitlement', () => {
       expect(renderWithContext(withLicense({ hideLogtoBranding: true }))).toStrictEqual({
         isHideLogtoBrandingAvailable: true,
         isHideLogtoBrandingEnabled: true,
         isCustomUiCspEnabled: false,
       });
       expect(renderWithContext(withLicense({ bringYourUi: true }))).toStrictEqual({
-        isHideLogtoBrandingAvailable: false,
-        isHideLogtoBrandingEnabled: false,
+        isHideLogtoBrandingAvailable: true,
+        isHideLogtoBrandingEnabled: true,
         isCustomUiCspEnabled: true,
       });
     });
@@ -94,7 +94,7 @@ describe('useBrandingEntitlements', () => {
         renderWithContext({
           currentSubscriptionQuota: { ...defaultSubscriptionQuota, bringYourUiEnabled: true },
         })
-      ).toMatchObject({ isHideLogtoBrandingEnabled: false, isCustomUiCspEnabled: false });
+      ).toMatchObject({ isHideLogtoBrandingEnabled: true, isCustomUiCspEnabled: false });
     });
   });
 

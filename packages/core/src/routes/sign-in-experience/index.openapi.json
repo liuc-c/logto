@@ -24,7 +24,7 @@
                       "description": "The language detection policy for the sign-in page."
                     },
                     "hideLogtoBranding": {
-                      "description": "Cloud only. Whether to hide the Logto branding on hosted sign-in pages."
+                      "description": "Whether to hide the Logto branding on hosted sign-in pages. Freely configurable in self-hosted OSS."
                     },
                     "signIn": {
                       "description": "Sign-in method settings."
@@ -144,7 +144,7 @@
                     "description": "Control the language detection policy for the sign-in page."
                   },
                   "hideLogtoBranding": {
-                    "description": "Cloud only. Whether to hide the Logto branding on hosted sign-in pages."
+                    "description": "Whether to hide the Logto branding on hosted sign-in pages. Freely configurable in self-hosted OSS."
                   },
                   "signIn": {
                     "description": "Sign-in method settings"
