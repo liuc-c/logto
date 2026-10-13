@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import StaticPageLayout from '@/Layout/StaticPageLayout';
-import SocialLanding from '@/containers/SocialLanding';
+import LoadingLayer from '@/shared/components/LoadingLayer';
 
-import styles from './index.module.scss';
 import useSocialCallbackHandler from './use-social-callback-handler';
 
 type Parameters = {
@@ -31,11 +29,7 @@ const Callback = () => {
     return null;
   }
 
-  return (
-    <StaticPageLayout>
-      <SocialLanding isLoading className={styles.connectorContainer} connectorId={connectorId} />
-    </StaticPageLayout>
-  );
+  return <LoadingLayer />;
 };
 
 export default Callback;

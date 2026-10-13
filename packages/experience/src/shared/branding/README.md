@@ -9,6 +9,12 @@ badge, without a second horizontal logo. `BrandLoading` preserves the original S
 geometry and motion, scopes its CSS, and gives each mask/clipPath its own React ID.
 Reduced motion disables rotation and retains the original slow opacity pulse.
 
+Page-level loading in Experience, Console, and Account Center shares
+`BrandLoadingState`: one 64px badge and a localized message with a 16px gap.
+Social and SSO callbacks use the same presentation throughout the redirect flow,
+without a connector logo or a toast-style background box. Compact inline loading
+indicators continue to use `BrandLoading` directly.
+
 `resolveBuiltInLogo` maps only the two legacy logto.io default URLs to the bundled
 logos. Empty or missing branding uses the bundled light/dark pair. Custom branding
 values retain their existing behavior, including application/organization overrides.

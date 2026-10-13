@@ -7,7 +7,7 @@ import useSocial from '@/containers/SocialSignInList/use-social';
 import useFallbackRoute from '@/hooks/use-fallback-route';
 import { useSieMethods } from '@/hooks/use-sie';
 import useSingleSignOn from '@/hooks/use-single-sign-on';
-import { LoadingIconWithContainer } from '@/shared/components/LoadingLayer';
+import { LoadingStatus } from '@/shared/components/LoadingLayer';
 import { logtoGoogleOneTapCookie } from '@/utils/cookies';
 
 import styles from './index.module.scss';
@@ -70,7 +70,7 @@ const DirectSignIn = () => {
 
   return (
     <div className={styles.container}>
-      <LoadingIconWithContainer />
+      <LoadingStatus />
     </div>
   );
 };

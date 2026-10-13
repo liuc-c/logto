@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 
 import useConnectors from '@/hooks/use-connectors';
-import { LoadingIcon } from '@/shared/components/LoadingLayer';
+import LoadingLayer from '@/shared/components/LoadingLayer';
 
 import styles from './index.module.scss';
 
@@ -15,12 +15,15 @@ const SocialLanding = ({ className, connectorId, isLoading = false }: Props) => 
   const { findConnectorById, getConnectorLogo } = useConnectors();
   const result = findConnectorById(connectorId);
 
+  if (isLoading) {
+    return <LoadingLayer />;
+  }
+
   return (
     <div className={classNames(styles.container, className)}>
       <div className={styles.connector}>
         {result ? <img src={getConnectorLogo(result)} alt="logo" /> : connectorId}
       </div>
-      {isLoading && <LoadingIcon />}
     </div>
   );
 };

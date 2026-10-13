@@ -1,6 +1,6 @@
+import BrandLoadingState from '@branding/BrandLoadingState';
 import { useState, useEffect } from 'react';
-
-import { Daisy } from '@/ds-components/Spinner';
+import { useTranslation } from 'react-i18next';
 
 import styles from './index.module.scss';
 
@@ -11,6 +11,7 @@ const suspenseDisplayTimeout = 500; // Milliseconds
  * @returns {JSX.Element} The spinner
  */
 function DelayedSuspenseFallback() {
+  const { t } = useTranslation('experience');
   const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
@@ -24,7 +25,12 @@ function DelayedSuspenseFallback() {
   }, []);
 
   if (showSpinner) {
-    return <Daisy className={styles.daisy} />;
+    return (
+      <BrandLoadingState
+        className={styles.loading}
+        message={t('account_center.sessions.loading')}
+      />
+    );
   }
 
   return null;

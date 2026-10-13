@@ -1,19 +1,27 @@
-import LoadingIcon from './LoadingIcon';
+import { useTranslation } from 'react-i18next';
+
+import BrandLoadingState from '../../branding/BrandLoadingState';
+
 import LoadingMask from './LoadingMask';
 import styles from './index.module.scss';
 
 export { default as LoadingIcon } from './LoadingIcon';
 export { default as LoadingMask } from './LoadingMask';
 
-export const LoadingIconWithContainer = () => (
-  <div className={styles.container}>
-    <LoadingIcon />
-  </div>
-);
+export const LoadingStatus = () => {
+  const { t } = useTranslation();
+
+  return (
+    <BrandLoadingState
+      className={styles.loadingStatus}
+      message={t('account_center.sessions.loading')}
+    />
+  );
+};
 
 const LoadingLayer = () => (
   <LoadingMask>
-    <LoadingIconWithContainer />
+    <LoadingStatus />
   </LoadingMask>
 );
 
