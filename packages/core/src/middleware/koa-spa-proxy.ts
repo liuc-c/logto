@@ -20,7 +20,11 @@ type Properties = {
   readonly prefix?: string;
 };
 
-export default function koaSpaProxy<StateT, ContextT extends IRouterParamContext, ResponseBodyT>({
+export default function koaSpaProxy<
+  StateT extends { isDisabledDemoAppRequest?: boolean },
+  ContextT extends IRouterParamContext,
+  ResponseBodyT,
+>({
   mountedApps,
   packagePath = 'experience',
   port = 5001,
@@ -56,7 +60,7 @@ export default function koaSpaProxy<StateT, ContextT extends IRouterParamContext
     }
     const { customUiAssets } = await queries.signInExperiences.findDefaultSignInExperience();
     // If user has uploaded custom UI assets, serve them instead of native experience UI
-    if (customUiAssets && packagePath === 'experience') {
+    if (customUiAssets && packagePath === 'experience' && !ctx.state.isDisabledDemoAppRequest) {
       const serve = serveCustomUiAssets(customUiAssets.id);
       return serve(ctx, next);
     }

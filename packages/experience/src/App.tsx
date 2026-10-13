@@ -141,6 +141,12 @@ const App = () => {
                       </Route>
 
                       {/* Passwordless verification code */}
+                      {/* Disabled demo URLs enter the experience SPA and must show its 404 page,
+                          even when another route has dynamic segments at the same depth. */}
+                      <Route path="demo-app/verification-code" element={<ErrorPage />} />
+                      <Route path="device-demo-app/verification-code" element={<ErrorPage />} />
+                      <Route path="demo-app/*" element={<ErrorPage />} />
+                      <Route path="device-demo-app/*" element={<ErrorPage />} />
                       <Route path=":flow/verification-code" element={<VerificationCode />} />
 
                       {/* Mfa onboarding page. Prompt users to turn on 2-step verification. */}

@@ -3,7 +3,7 @@ import type { MiddlewareType } from 'koa';
 import { UserApps } from '#src/env-set/index.js';
 import type Queries from '#src/tenants/Queries.js';
 
-/** Keep the reserved prefixes even when disabled, and run before static serving / SPA fallback. */
+/** Route disabled demo pages through the experience app without serving demo assets. */
 export default function koaDemoApps({
   logtoConfigs: { getDemoAppsConfig },
 }: Queries): MiddlewareType {
@@ -19,8 +19,17 @@ export default function koaDemoApps({
     ctx.set('Cache-Control', 'no-store');
     const { enabled } = await getDemoAppsConfig();
     if (!enabled) {
-      ctx.status = 404;
-      return;
+      // Bypass the mounted demo apps and the experience proxy's reserved-prefix check. The
+      // browser keeps the original URL, so its router can render the 404 page for that path.
+      const originalPath = ctx.request.path;
+      ctx.state.isDisabledDemoAppRequest = true;
+      ctx.request.path = '/_disabled-demo-app';
+      try {
+        await next();
+        return;
+      } finally {
+        ctx.request.path = originalPath;
+      }
     }
     return next();
   };
